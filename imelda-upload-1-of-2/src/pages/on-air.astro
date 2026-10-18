@@ -1,0 +1,99 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import MediaCard from '../components/MediaCard.astro';
+import ToneImage from '../components/ToneImage.astro';
+import { site, shows, mediaItems } from '../lib/data';
+import { photos, duo } from '../lib/photos';
+
+const show = shows[0];
+const onRadio = [
+  'Present and link live radio segments',
+  'Interview guests and personalities',
+  'Engage listeners through conversations and interactive features',
+  'Tell stories and create relatable on-air content',
+  'Introduce and tease music, features and upcoming programmes',
+  'Think quickly and respond naturally in a live environment',
+];
+const ig = site.social.find((x) => x.label === 'Instagram');
+---
+<Base title="On air" description="Imelda Mutio hosts the Mid-Morning Show on Classic 105, weekdays from 10am to 3pm: music, stories, lifestyle conversations, guest interviews and the daily Dilemma of the Day.">
+  <PageHero kicker="On air" title="Live on weekday radio." lede={show ? `${show.title}. ${show.displayDate}.` : undefined} stage="podium" word="ON AIR" />
+
+  <section class="room section" aria-labelledby="show-h">
+    <div class="wrap show">
+      <div class="show-img tone-host reveal">
+        <ToneImage src={photos['studio-mic'].src} duo={duo['studio-mic']} alt={photos['studio-mic'].alt} widths={[500, 900, 1200]} sizes="(min-width: 900px) 44vw, 92vw" pos={photos['studio-mic'].pos} loading="eager" />
+        <span class="live" aria-hidden="true"><i></i>On air</span>
+      </div>
+      <div class="show-body reveal" style="--d:.15s">
+        <span class="badge badge--media">Radio</span>
+        <h2 id="show-h" class="h2" data-split>The Mid-Morning Show</h2>
+        <p class="when">{show?.displayDate}</p>
+        <p class="lede">On radio I combine music, personality and conversation to create an engaging mid-morning listen. My style is conversational, upbeat and audience-focused, so listeners feel part of the conversation.</p>
+        <h3 class="sub-h">What I do on radio</h3>
+        <ul class="dots">{onRadio.map((r) => <li>{r}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage melt section grain" aria-labelledby="dil-h">
+    <div class="beams" aria-hidden="true"></div>
+    <div class="wrap dil">
+      <div>
+        <p class="kicker">Daily feature</p>
+        <h2 id="dil-h" class="h1" data-split>Dilemma of the Day.</h2>
+      </div>
+      <div class="dil-copy">
+        <p class="lede reveal">Every weekday I put one question to listeners, with two hard choices, and let them argue it out on air and online. It's the same skill I bring to a panel: ask the question people actually want answered, then let the room talk.</p>
+        {ig && <a class="btn btn--glass reveal" style="--d:.15s" href={ig.url} target="_blank" rel="me noopener">See the clips on Instagram<span class="sr-only"> (opens in a new tab)</span></a>}
+      </div>
+    </div>
+  </section>
+
+  {mediaItems.length > 0 && (
+    <section class="room-2 section" aria-labelledby="press-h">
+      <div class="wrap">
+        <div class="head head--split">
+          <div><p class="kicker">Press</p><h2 id="press-h" class="h1" data-split>In the press.</h2></div>
+          <p class="lede reveal">Each item links to the original publisher. Coverage isn't an endorsement of my services by the publishers listed.</p>
+        </div>
+        <div class="grid grid--3">{mediaItems.map((m) => <MediaCard item={m} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="room section" aria-labelledby="org-h">
+    <div class="wrap">
+      <aside class="org">
+        <div>
+          <h2 id="org-h" class="h3">Did I host your event?</h2>
+          <p class="muted">Share a programme, post or photo and I'll add it here with its source.</p>
+        </div>
+        <a class="btn btn--ghost" href={`mailto:${site.contact.email}?subject=${encodeURIComponent('Event credit for my website')}`}>Send the details</a>
+      </aside>
+    </div>
+  </section>
+</Base>
+<style>
+  .show { display: grid; gap: clamp(2rem, 1.5rem + 3vw, 4.5rem); align-items: center; }
+  @media (min-width: 900px) { .show { grid-template-columns: 1fr 1.1fr; } }
+  .show-img { position: relative; aspect-ratio: 4 / 5; border-radius: var(--r-lg); overflow: hidden; background: var(--stage); box-shadow: var(--shadow); }
+  .live { position: absolute; z-index: 3; left: 1rem; top: 1rem; display: inline-flex; align-items: center; gap: .5rem; padding: .35em .9em; border-radius: 999px; background: rgba(5,11,28,.8); color: var(--ivory); font-family: var(--font-display); font-weight: 700; font-size: .82rem; }
+  .live i { width: 9px; height: 9px; border-radius: 50%; background: #FF4D3D; box-shadow: 0 0 10px #FF4D3D; animation: onair 1.6s ease-in-out infinite; }
+  @keyframes onair { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .live i { animation: none; } }
+  .show-body { display: grid; gap: 1rem; justify-items: start; }
+  .when { color: var(--accent-text); font-weight: 700; font-family: var(--font-display); font-size: var(--step-1); }
+  .show-body .lede { color: var(--text-2); }
+  .sub-h { font-size: var(--step-1); margin-top: .6rem; }
+  .dots { list-style: none; padding: 0; display: grid; gap: .55rem; }
+  .dots li { position: relative; padding-left: 1.6rem; }
+  .dots li::before { content: ''; position: absolute; left: 0; top: .5em; width: 9px; height: 9px; border-radius: 50%; background: var(--copper); box-shadow: 0 0 10px var(--copper); }
+  .dil { display: grid; gap: 2rem; align-items: end; }
+  @media (min-width: 900px) { .dil { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+  .dil-copy { display: grid; gap: 1.5rem; justify-items: start; }
+  .dil-copy .lede { color: rgba(238,241,248,.86); }
+  .org { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between; align-items: center; padding: 2rem; border-radius: var(--r-lg); border: 1.5px dashed var(--line); }
+  .org > div { display: grid; gap: .5rem; max-width: 52ch; }
+</style>

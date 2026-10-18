@@ -1,0 +1,18 @@
+---
+/** A real photo shown in the brand's blue tone; the true colours come through on hover or focus of the parent card. */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props { src: ImageMetadata; duo?: ImageMetadata; alt: string; widths?: number[]; sizes: string; pos?: string; loading?: 'lazy' | 'eager'; class?: string }
+const { src, duo, alt, widths = [400, 700, 1000], sizes, pos = '50% 30%', loading = 'lazy', class: cls } = Astro.props;
+---
+<span class:list={['tone', cls]}>
+  <Image class="tone-color" src={src} alt={alt} widths={widths} sizes={sizes} loading={loading} style={`object-position:${pos}`} />
+  {duo && <Image class="tone-duo" src={duo} alt="" aria-hidden="true" widths={widths} sizes={sizes} loading={loading} style={`object-position:${pos}`} />}
+</span>
+<style>
+  .tone { position: absolute; inset: 0; display: block; overflow: hidden; }
+  .tone :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .7s var(--ease), transform 1.4s var(--ease-out); }
+  .tone :global(.tone-duo) { opacity: .72; mix-blend-mode: normal; }
+  :global(.tone-host:hover) .tone :global(img), :global(.tone-host:focus-within) .tone :global(img) { transform: scale(1.06); }
+  :global(.tone-host:hover) .tone :global(.tone-duo), :global(.tone-host:focus-within) .tone :global(.tone-duo) { opacity: 0; }
+</style>

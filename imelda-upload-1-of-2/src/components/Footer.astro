@@ -1,0 +1,100 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../lib/data';
+import { stages } from '../lib/photos';
+const year = new Date().getFullYear();
+const onContact = Astro.url.pathname.startsWith('/contact');
+const explore = [
+  { href: '/about/', label: 'About' }, { href: '/services/', label: 'Services' }, { href: '/on-air/', label: 'On air' },
+  { href: '/work/', label: 'Gallery' }, { href: '/media-kit/', label: 'Media kit' },
+];
+---
+<footer class="site-footer stage melt grain" data-footer>
+  <div class="backdrop" aria-hidden="true"><Image src={stages.brick} alt="" widths={[700, 1200, 1800]} sizes="100vw" loading="lazy" /></div>
+  <div class="beams" aria-hidden="true"></div>
+
+  {!onContact && (
+    <div class="wrap curtain">
+      <p class="kicker">Now booking</p>
+      <h2 class="big" data-split>Let's get your room <span>talking.</span></h2>
+      <div class="cta-row">
+        <a href="/contact/" class="btn btn--primary">Request a hosting proposal <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href={`mailto:${site.contact.email}`} class="mail">{site.contact.email}</a>
+      </div>
+    </div>
+  )}
+
+  <div class="wrap deck">
+    <div class="sign">
+      <p class="serif">{site.signOff}</p>
+      <a class="phone" href={`tel:${site.contact.phoneE164}`}>{site.contact.phoneDisplay}</a>
+    </div>
+    <nav aria-label="Footer" class="col">
+      <p class="col-h">Explore</p>
+      <ul>{explore.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+    </nav>
+    <div class="col">
+      <p class="col-h">Follow</p>
+      <ul class="social">
+        {site.social.map((s) => (
+          <li><a href={s.url} target="_blank" rel="me noopener"><span>{s.label}</span><span class="h">{s.handle}</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="marquee-name" aria-hidden="true" data-footer-name>
+    <span>Imelda Mutio</span>
+  </div>
+
+  <div class="wrap legal">
+    <p>© {year} Imelda Mutio · <a href="/privacy/">Privacy</a></p>
+    <p class="disc">{site.disclaimer}</p>
+    <a href="#main" class="top">Back to the top <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</footer>
+
+<style>
+  .site-footer { padding-top: clamp(5rem, 4rem + 6vw, 10rem); }
+  .backdrop { -webkit-mask-image: linear-gradient(180deg, transparent, #000 10rem); mask-image: linear-gradient(180deg, transparent, #000 10rem); }
+  .backdrop::after { background: linear-gradient(180deg, rgba(5,11,28,.55), rgba(5,11,28,.82) 60%, rgba(5,11,28,.97)); }
+  .curtain { display: grid; gap: 1.6rem; justify-items: center; text-align: center; padding-bottom: clamp(4rem, 3rem + 5vw, 8rem); }
+  .big { font-size: clamp(2.8rem, 1.4rem + 7vw, 8.4rem); line-height: .9; letter-spacing: -0.05em; font-weight: 700; max-width: 12ch; }
+  .big span { display: block; color: transparent; -webkit-text-stroke: 1.5px var(--ivory); transition: color .5s var(--ease); }
+  .curtain:hover .big span { color: var(--copper); -webkit-text-stroke-color: var(--copper); }
+  .cta-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem 2rem; }
+  .mail { font-family: var(--font-display); font-size: var(--step-1); font-weight: 600; text-decoration: none; background: linear-gradient(var(--copper), var(--copper)) 0 100% / 0 2px no-repeat; transition: background-size .4s var(--ease-out); padding-bottom: 2px; overflow-wrap: anywhere; }
+  .mail:hover { background-size: 100% 2px; }
+
+  .deck { display: grid; gap: 2.5rem; padding-block: 3rem; border-top: 1px solid var(--stage-line); }
+  @media (min-width: 860px) { .deck { grid-template-columns: 1.6fr 1fr 1fr; } }
+  .sign .serif { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.4rem); line-height: 1.05; color: var(--gold); max-width: 14ch; }
+  .phone { display: inline-block; margin-top: 1rem; font-family: var(--font-display); font-size: var(--step-1); font-weight: 600; text-decoration: none; }
+  .phone:hover { color: var(--copper); }
+  .col-h { font-family: var(--font-display); font-weight: 600; color: var(--mist); font-size: .9rem; margin-bottom: .9rem; }
+  ul { list-style: none; padding: 0; display: grid; gap: .35rem; }
+  .col a { text-decoration: none; font-weight: 650; display: inline-flex; align-items: baseline; gap: .6rem; padding-block: .2rem; transition: color .2s, transform .3s var(--ease-out); }
+  .col a:hover { color: var(--copper); transform: translateX(4px); }
+  .social .h { font-weight: 500; color: var(--mist); font-size: .88rem; }
+
+  .marquee-name { position: relative; overflow: hidden; line-height: .78; padding-top: 1rem; user-select: none; }
+  .marquee-name span { display: block; text-align: center; white-space: nowrap; font-family: var(--font-display); font-weight: 800; letter-spacing: -0.06em; font-size: clamp(3.4rem, 15vw, 17rem);
+    background: radial-gradient(520px circle at var(--fx, 50%) 30%, rgba(240,120,50,.95), rgba(61,123,255,.55) 35%, rgba(238,241,248,.08) 65%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 1px rgba(238,241,248,.18); transform: translateY(12%); }
+
+  .legal { display: grid; gap: .75rem; padding-block: 1.5rem 2rem; border-top: 1px solid var(--stage-line); font-size: var(--step--1); color: var(--mist); }
+  @media (min-width: 860px) { .legal { grid-template-columns: auto 1fr auto; align-items: start; gap: 2rem; } }
+  .legal a { color: var(--ivory); }
+  .disc { max-width: 80ch; }
+  .top { display: inline-flex; align-items: center; gap: .45rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+  .top svg { width: 1.1em; height: 1.1em; transition: transform .3s var(--ease-out); }
+  .top:hover svg { transform: translateY(-3px); }
+</style>
+<script>
+  const f = document.querySelector<HTMLElement>('[data-footer]');
+  const name = document.querySelector<HTMLElement>('[data-footer-name]');
+  f?.addEventListener('pointermove', (e) => {
+    if (!name) return; const r = name.getBoundingClientRect();
+    name.style.setProperty('--fx', `${e.clientX - r.left}px`);
+  });
+</script>

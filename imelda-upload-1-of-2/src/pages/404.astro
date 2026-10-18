@@ -1,0 +1,18 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { stages } from '../lib/photos';
+---
+<Base title="Page not found" noindex>
+  <section class="stage grain nf">
+    <div class="backdrop" aria-hidden="true"><Image src={stages.spotlight} alt="" widths={[700, 1400]} sizes="100vw" /></div>
+    <div class="beams" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker">404</p>
+      <h1 class="display">Dead air.</h1>
+      <p class="lede">That page isn't here. Let's get the programme back on track.</p>
+      <div class="btn-row"><a href="/" class="btn btn--primary">Back to the homepage</a><a href="/contact/" class="btn btn--glass">Make an enquiry</a></div>
+    </div>
+  </section>
+</Base>
+<style>.nf { min-height: 100svh; display: grid; align-items: center; } .nf .wrap { display: grid; gap: 1.2rem; justify-items: start; padding-top: var(--header-h); } .lede { color: rgba(238,241,248,.85); }</style>

@@ -1,0 +1,234 @@
+---
+import { Image } from 'astro:assets';
+import { stages, cutouts, type StageKey, type CutoutKey } from '../lib/photos';
+import { showreelReady } from '../lib/data';
+
+/** Hero slides. Each one is a short "shot": the camera drifts through stage light while I step into it. */
+const acts: { tab: string; stage: StageKey; cut: CutoutKey; pos: string; move: string; a: string; b: string; sub: string }[] = [
+  { tab: 'The room', stage: 'spotlight', cut: 'green', pos: '50% 0%', move: 'push', a: 'Good conversations.', b: 'Great audiences.', sub: "I'm a radio presenter and MC. I bring the warmth and quick thinking of live radio to your event, and keep the whole room part of it." },
+  { tab: 'The conversation', stage: 'hexsphere', cut: 'orange', pos: '50% 40%', move: 'pan-l', a: 'I keep the room', b: 'in the conversation.', sub: 'Panels, workshops and corporate sessions where the audience feels included, not talked at.' },
+  { tab: 'The stage', stage: 'podium', cut: 'coat', pos: '50% 10%', move: 'rise', a: 'On the mic.', b: 'On the clock.', sub: 'Clear communication, natural audience interaction and a steady hand on the programme, from first welcome to final thank-you.' },
+];
+---
+<section class="hero" aria-roledescription="carousel" aria-label="Introducing Imelda Mutio" data-hero>
+  <canvas class="dust" aria-hidden="true" data-dust></canvas>
+  {acts.map((act, i) => (
+    <div class:list={['act', `move-${act.move}`, `cut-${act.cut}`, { 'is-active': i === 0 }]} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${acts.length}: ${act.tab}`} inert={i !== 0} data-act>
+      <div class="layer bg" aria-hidden="true">
+        <Image src={stages[act.stage]} alt="" style={`object-position:${act.pos}`} widths={[700, 1100, 1600, 2000]} sizes="100vw" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+      </div>
+      <div class="sweep" aria-hidden="true"><span></span><span></span></div>
+      <div class="layer cut">
+        <Image src={cutouts[act.cut].src} alt={cutouts[act.cut].alt} widths={[500, 800, 1100, 1500]} sizes="(min-width: 960px) 46vw, 92vw" loading={i === 0 ? 'eager' : 'lazy'} />
+      </div>
+      <div class="wrap copy">
+        <p class="num" aria-hidden="true"><span>{String(i + 1).padStart(2, '0')}</span> {act.tab}</p>
+        {i === 0
+          ? <h1 class="title"><span class="ln">{act.a}</span> <span class="ln b">{act.b}</span></h1>
+          : <p class="title"><span class="ln">{act.a}</span> <span class="ln b">{act.b}</span></p>}
+        <p class="sub">{act.sub}</p>
+        <div class="btn-row">
+          <a href="/contact/" class="btn btn--primary">Book me <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          {showreelReady
+            ? <a href="/work/#showreel" class="btn btn--glass">Watch the showreel</a>
+            : <a href="/work/" class="btn btn--glass">See me in action</a>}
+        </div>
+      </div>
+    </div>
+  ))}
+  <div class="wrap controls">
+    <div class="tabs" role="group" aria-label="Choose slide">
+      {acts.map((act, i) => (
+        <button type="button" class="tab" aria-pressed={i === 0 ? 'true' : 'false'} data-goto={i} aria-label={`Slide ${i + 1}: ${act.tab}`}>
+          <span class="tab-bar" aria-hidden="true"><span></span></span>
+        </button>
+      ))}
+    </div>
+    <p class="count" aria-hidden="true"><span data-cur>01</span> / {String(acts.length).padStart(2, '0')}</p>
+    <button type="button" class="icon-btn pause" data-pause aria-label="Pause slideshow">
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+    </button>
+  </div>
+</section>
+
+<style>
+  .hero { --dur: 7s; --px: 0; --py: 0; position: relative; isolation: isolate; overflow: hidden; background: var(--stage); color: var(--ivory); min-height: 100svh; display: grid; }
+  .hero > * { grid-area: 1 / 1; }
+  .dust { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; mix-blend-mode: screen; }
+
+  /* A slide: hidden until active. Outgoing slides drift forward and blur away. */
+  .act { position: relative; display: grid; min-height: 100svh; opacity: 0; visibility: hidden; transform: scale(1.04); filter: blur(8px);
+    transition: opacity 1.1s var(--ease), transform 1.4s var(--ease-out), filter 1.1s var(--ease), visibility 0s 1.2s; }
+  .act.is-active { opacity: 1; visibility: visible; transform: none; filter: none; transition: opacity 1.1s var(--ease), transform 1.4s var(--ease-out), filter 1.1s var(--ease), visibility 0s; }
+  .layer { position: absolute; inset: 0; }
+
+  /* Background: a slow camera move per slide */
+  .bg { z-index: -2; transform: translate3d(calc(var(--px) * -12px), calc(var(--py) * -10px), 0); transition: transform .8s var(--ease-out); }
+  .bg :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .bg::after { content: ''; position: absolute; inset: 0; background:
+    radial-gradient(80% 70% at 68% 30%, transparent 0, rgba(5,11,28,.5) 70%),
+    linear-gradient(180deg, rgba(5,11,28,.3) 0%, transparent 28%, rgba(5,11,28,.5) 70%, rgba(5,11,28,.96) 100%); }
+  .act.is-active .bg :global(img) { animation: var(--cam) calc(var(--dur) + 1.5s) linear both; }
+  .move-push { --cam: cam-push; } .move-pan-l { --cam: cam-pan-l; } .move-pan-r { --cam: cam-pan-r; } .move-rise { --cam: cam-rise; }
+  @keyframes cam-push { from { transform: scale(1.22); } to { transform: scale(1.02); } }
+  @keyframes cam-pan-l { from { transform: scale(1.16) translateX(4%); } to { transform: scale(1.08) translateX(-3%); } }
+  @keyframes cam-pan-r { from { transform: scale(1.16) translateX(-4%); } to { transform: scale(1.08) translateX(3%); } }
+  @keyframes cam-rise { from { transform: scale(1.18) translateY(5%); } to { transform: scale(1.06) translateY(-2%); } }
+
+  /* Two follow-spots sweeping across the stage */
+  .sweep { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; mix-blend-mode: screen; }
+  .sweep span { position: absolute; top: -20%; left: 50%; width: 46vmax; height: 140%; transform-origin: 50% 0;
+    background: conic-gradient(from 180deg at 50% 0%, transparent 170deg, rgba(120,170,255,.16) 176deg, rgba(190,215,255,.32) 180deg, rgba(120,170,255,.16) 184deg, transparent 190deg); filter: blur(4px); }
+  .sweep span:first-child { margin-left: -38vmax; animation: beam-a 9s var(--ease) infinite alternate; }
+  .sweep span:last-child { margin-left: -8vmax; animation: beam-b 11s var(--ease) infinite alternate; }
+  @keyframes beam-a { from { transform: rotate(-22deg); } to { transform: rotate(6deg); } }
+  @keyframes beam-b { from { transform: rotate(20deg); } to { transform: rotate(-8deg); } }
+
+  /* Me: stepping into the light, then breathing gently */
+  .cut { z-index: 1; display: flex; align-items: flex-end; justify-content: center; pointer-events: none; }
+  .cut :global(img) { width: min(92vw, 560px); height: auto; max-height: 62svh; object-fit: contain; object-position: bottom;
+    -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent 100%); mask-image: linear-gradient(180deg, #000 80%, transparent 100%);
+    filter: drop-shadow(0 0 46px rgba(61,123,255,.42)); opacity: 0; transform: translate3d(0, 6%, 0) scale(1.1); transform-origin: 50% 100%; }
+  .act.is-active .cut :global(img) { animation: step-in 1.6s var(--ease-out) .2s both, breathe 7s ease-in-out 1.8s infinite alternate; }
+  @keyframes step-in { from { opacity: 0; transform: translate3d(0, 6%, 0) scale(1.1); filter: blur(14px) drop-shadow(0 0 46px rgba(61,123,255,.42)); } to { opacity: 1; transform: none; filter: blur(0) drop-shadow(0 0 46px rgba(61,123,255,.42)); } }
+  @keyframes breathe { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -1.2%, 0) scale(1.012); } }
+  .cut { transform: translate3d(calc(var(--px) * 16px), calc(var(--py) * 8px), 0); transition: transform .8s var(--ease-out); }
+
+  /* Copy */
+  .copy { position: relative; z-index: 4; align-self: end; display: grid; gap: .8rem; justify-items: start; padding-top: calc(var(--header-h) + 1rem); padding-bottom: 6.6rem; }
+  .num { font-family: var(--font-display); font-size: .82rem; font-weight: 600; color: rgba(238,241,248,.7); display: inline-flex; gap: .6rem; align-items: center; }
+  .num span { color: var(--copper); }
+  .title { font-family: var(--font-display); font-weight: 650; font-size: clamp(1.9rem, 1.1rem + 3.4vw, 5.2rem); line-height: .98; letter-spacing: -0.04em; max-width: 13ch; }
+  .ln { display: block; overflow: hidden; padding-bottom: .06em; }
+  .ln.b { color: var(--copper); }
+  .sub { color: rgba(238,241,248,.84); font-size: clamp(.92rem, .86rem + .35vw, 1.2rem); line-height: 1.5; max-width: 40ch; }
+  .copy .btn { min-height: 46px; padding: .7em 1.3em; font-size: .92rem; }
+  /* Text plays in line by line each time a slide becomes active */
+  .act .num, .act .sub, .act .btn-row { opacity: 0; transform: translateY(16px); }
+  .act.is-active .num { animation: fade-up .8s var(--ease-out) .25s both; }
+  .act.is-active .ln { animation: line-up 1s var(--ease-out) both; }
+  .act.is-active .ln:first-child { animation-delay: .35s; }
+  .act.is-active .ln.b { animation-delay: .5s; }
+  .act.is-active .sub { animation: fade-up .9s var(--ease-out) .7s both; }
+  .act.is-active .btn-row { animation: fade-up .9s var(--ease-out) .85s both; }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes line-up { from { clip-path: inset(0 0 100% 0); transform: translateY(40%); } to { clip-path: inset(0 0 -10% 0); transform: none; } }
+
+  @media (max-width: 959px) {
+    .cut { align-items: flex-start; padding-top: calc(var(--header-h) + .25rem); }
+    .cut :global(img) { width: auto; height: 52svh; max-height: none; max-width: 92vw; }
+    .cut-orange .cut :global(img) { height: 48svh; }
+    .copy { background: linear-gradient(180deg, transparent, rgba(5,11,28,.9) 26%); padding-top: 3rem; }
+  }
+  @media (min-width: 960px) {
+    .copy { align-self: center; padding-bottom: 5rem; }
+    .cut { justify-content: flex-end; padding-right: 4vw; }
+    .cut :global(img) { width: min(46vw, 760px); max-height: 92svh; }
+    .cut-green .cut :global(img) { width: min(40vw, 620px); max-height: 90svh; }
+    .cut-orange .cut :global(img) { width: min(44vw, 680px); max-height: 84svh; }
+    .cut-coat .cut :global(img) { width: min(30vw, 460px); max-height: 90svh; }
+  }
+
+  /* Controls: dash pagination with progress, Tecno-style */
+  .controls { position: relative; z-index: 5; align-self: end; display: flex; align-items: center; gap: 1rem; padding-bottom: 1.6rem; }
+  .tabs { display: flex; gap: .5rem; }
+  .tab { all: unset; cursor: pointer; padding-block: .9rem; }
+  .tab:focus-visible { outline: 3px solid var(--copper); outline-offset: 2px; border-radius: 4px; }
+  .tab-bar { display: block; width: clamp(28px, 6vw, 64px); height: 3px; background: rgba(255,255,255,.28); border-radius: 3px; overflow: hidden; transition: width .5s var(--ease-out); }
+  .tab[aria-pressed='true'] .tab-bar { width: clamp(48px, 10vw, 110px); }
+  .tab-bar span { display: block; height: 100%; width: 100%; background: var(--copper); transform: scaleX(0); transform-origin: left; }
+  .tab[aria-pressed='true'] .tab-bar span { transform: scaleX(1); }
+  .hero.playing .tab[aria-pressed='true'] .tab-bar span { animation: fill var(--dur) linear both; }
+  .hero.paused .tab[aria-pressed='true'] .tab-bar span { animation-play-state: paused; }
+  @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .count { font-family: var(--font-display); font-size: .85rem; font-weight: 600; color: rgba(238,241,248,.7); font-variant-numeric: tabular-nums; margin-left: auto; }
+  .count span { color: var(--ivory); }
+  .pause { border-color: rgba(255,255,255,.3); color: var(--ivory); flex: none; width: 42px; height: 42px; }
+  .pause .i-play { display: none; }
+  .hero:not(.playing) .i-pause { display: none; }
+  .hero:not(.playing) .i-play { display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .act .num, .act .sub, .act .btn-row, .cut :global(img) { opacity: 1; transform: none; filter: drop-shadow(0 0 46px rgba(61,123,255,.42)); }
+    .sweep, .dust { display: none; }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) {
+    const acts = [...hero.querySelectorAll<HTMLElement>('[data-act]')];
+    const tabs = [...hero.querySelectorAll<HTMLButtonElement>('[data-goto]')];
+    const cur = hero.querySelector<HTMLElement>('[data-cur]')!;
+    const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-pause]')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DUR = 7000;
+    let i = 0, timer = 0, userPaused = reduce, focusInside = false;
+    const restartBar = () => { const s = tabs[i].querySelector<HTMLElement>('.tab-bar span'); if (s) { s.style.animation = 'none'; void s.offsetWidth; s.style.animation = ''; } };
+    const playing = () => !userPaused && !focusInside && !document.hidden;
+    const schedule = () => {
+      clearTimeout(timer);
+      hero.classList.toggle('playing', !userPaused);
+      hero.classList.toggle('paused', !userPaused && !playing());
+      if (playing()) timer = window.setTimeout(() => show(i + 1), DUR);
+    };
+    const show = (n: number) => {
+      i = (n + acts.length) % acts.length;
+      acts.forEach((a, k) => { const on = k === i; a.classList.toggle('is-active', on); a.inert = !on; });
+      tabs.forEach((t, k) => t.setAttribute('aria-pressed', String(k === i)));
+      cur.textContent = String(i + 1).padStart(2, '0');
+      restartBar(); schedule();
+    };
+    tabs.forEach((t, k) => t.addEventListener('click', () => show(k)));
+    pauseBtn.addEventListener('click', () => {
+      userPaused = !userPaused;
+      pauseBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+      if (!userPaused) restartBar();
+      schedule();
+    });
+    pauseBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+    hero.addEventListener('focusin', (e) => { if (e.target !== pauseBtn && !(e.target as HTMLElement).closest('[data-goto]')) { focusInside = true; schedule(); } });
+    hero.addEventListener('focusout', (e) => { if (!hero.contains(e.relatedTarget as Node)) { focusInside = false; schedule(); } });
+    document.addEventListener('visibilitychange', schedule);
+
+    // Swipe between slides on touch screens.
+    let sx = 0, sy = 0;
+    hero.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    hero.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(i + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+
+    if (!reduce) {
+      // Depth: background and I move a little against the pointer.
+      hero.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        const r = hero.getBoundingClientRect();
+        hero.style.setProperty('--px', ((e.clientX - r.left) / r.width - .5).toFixed(3));
+        hero.style.setProperty('--py', ((e.clientY - r.top) / r.height - .5).toFixed(3));
+      });
+      // Dust drifting through the light.
+      const c = hero.querySelector<HTMLCanvasElement>('[data-dust]')!;
+      const ctx = c.getContext('2d')!;
+      let w = 0, h = 0, raf = 0, visible = true;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const motes = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 1.6 + .4, s: Math.random() * .00025 + .00008, a: Math.random() * .5 + .15, d: Math.random() * Math.PI * 2 }));
+      const size = () => { w = c.clientWidth; h = c.clientHeight; c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+      const tick = (t: number) => {
+        ctx.clearRect(0, 0, w, h);
+        for (const m of motes) {
+          m.y -= m.s * 16; m.x += Math.sin(t / 3000 + m.d) * .00018;
+          if (m.y < -0.02) { m.y = 1.02; m.x = Math.random(); }
+          const tw = .6 + .4 * Math.sin(t / 900 + m.d);
+          ctx.beginPath(); ctx.arc(m.x * w, m.y * h, m.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(190, 215, 255, ${m.a * tw})`; ctx.fill();
+        }
+        if (visible) raf = requestAnimationFrame(tick);
+      };
+      size(); window.addEventListener('resize', size);
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; cancelAnimationFrame(raf); if (visible) raf = requestAnimationFrame(tick); }).observe(hero);
+    }
+    show(0);
+  }
+</script>
