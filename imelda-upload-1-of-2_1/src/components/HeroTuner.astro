@@ -1,0 +1,303 @@
+---
+import { Image } from 'astro:assets';
+import { photos, type PhotoKey } from '../lib/photos';
+
+/** Home hero: "tune in". A stack of polaroids (my four kinds of work) and a radio dial to tune between them.
+ *  Each turn of the dial tosses the top photo to the back of the pile, with a flicker of static. */
+const stations: { tab: string; photo: PhotoKey; x: number; c1: string; c2: string; a: string; b: string; note: string; tape: string; sub: string }[] = [
+  { tab: 'Voice', photo: 'imelda-pink', x: 12, c1: '#FF5C93', c2: '#8E5BFF', a: 'Your brand.', b: 'My voice.', note: "hi, that's me!", tape: 'rose', sub: 'Commercials, explainers and brand reads in a warm, natural voice that sounds like a friend, not a script.' },
+  { tab: 'MC', photo: 'imelda-cardigan', x: 37, c1: '#C9B6FF', c2: '#FF5C93', a: 'Hand me', b: 'the mic.', note: 'MC mode: on', tape: 'lilac', sub: 'Galas, awards and celebrations, with warmth, energy and a steady hand on the programme from welcome to thank-you.' },
+  { tab: 'Ads', photo: 'imelda-coral', x: 62, c1: '#FF9C7A', c2: '#FF5C93', a: 'Ads that sound', b: 'like a friend.', note: 'on brand, always', tape: 'peach', sub: 'Radio and TV spots, social videos and launches, delivered in a voice your audience already trusts.' },
+  { tab: 'Host', photo: 'imelda-trench', x: 87, c1: '#F6C6A8', c2: '#C9B6FF', a: 'Every room,', b: 'in the loop.', note: "let's talk", tape: 'butter', sub: 'Corporate events, panels and festivals where the audience feels included, not talked at.' },
+];
+const ticks = [88, 92, 96, 100, 104, 108];
+---
+<section class="hero stage" aria-roledescription="carousel" aria-label="Introducing Imelda Mutio" data-hero style={`--c1:${stations[0].c1};--c2:${stations[0].c2}`}>
+  <div class="glow" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="sky" aria-hidden="true">
+    {Array.from({ length: 14 }, (_, k) => <i style={`--k:${k}`}></i>)}
+  </div>
+
+  <div class="wrap grid">
+    <div class="copy">
+      <p class="onair"><span class="live" aria-hidden="true"></span> On air <span class="sep" aria-hidden="true">·</span> <span class="now">Now playing: <b data-now>{stations[0].tab}</b></span></p>
+      <h1 class="who">Imelda Mutio <span>MC, host and voice-over artist</span></h1>
+      <div class="lines">
+        {stations.map((s, i) => (
+          <div class:list={['line', { 'is-on': i === 0 }]} data-line aria-hidden={i === 0 ? undefined : 'true'}>
+            <p class="title"><span class="ln">{s.a}</span> <span class="ln b">{s.b}</span></p>
+            <p class="sub">{s.sub}</p>
+          </div>
+        ))}
+      </div>
+      <div class="btn-row">
+        <a href="/contact/" class="btn btn--primary">Book me <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="/dilemma/" class="btn btn--glass">Watch the Dilemma</a>
+      </div>
+    </div>
+
+    <div class="deck" data-deck>
+      <span class="spin" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><path id="circ" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0"/></defs><text><textPath href="#circ">VOICE-OVER ✦ MC ✦ HOST ✦ ADS ✦ </textPath></text><path d="M60 46c.5 7 5.5 12.5 13 14-7.5 1.5-12.5 7-13 14-.5-7-5.5-12.5-13-14 7.5-1.5 12.5-7 13-14z" fill="currentColor"/></svg></span>
+      <svg class="heart" viewBox="0 0 32 30" aria-hidden="true"><path d="M16 28S2 19.5 2 10.2C2 5.6 5.6 2 10 2c2.7 0 4.9 1.3 6 3.4C17.1 3.3 19.3 2 22 2c4.4 0 8 3.6 8 8.2C30 19.5 16 28 16 28z" fill="currentColor"/></svg>
+      {stations.map((s, i) => (
+        <figure class="card" data-card data-pos={i} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${stations.length}: ${s.tab}`} aria-hidden={i === 0 ? undefined : 'true'}>
+          <span class:list={['tape', `tape--${s.tape}`]} aria-hidden="true"></span>
+          <div class="ph">
+            <Image src={photos[s.photo].src} alt={photos[s.photo].alt} widths={[360, 560, 800, 1100]} sizes="(min-width: 960px) min(32vw, 460px), 70vw" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+            <span class="static" aria-hidden="true"></span>
+          </div>
+          <figcaption><span class="hand">{s.note}</span><span class="tag">{String(i + 1).padStart(2, '0')} · {s.tab}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+
+  <div class="wrap tuner">
+    <div class="dial" role="group" aria-label="Tune to a slide">
+      <div class="scale" aria-hidden="true">
+        {ticks.map((t) => <span style={`--x:${((t - 88) / 20) * 100}%`}>{t}</span>)}
+      </div>
+      <span class="needle" aria-hidden="true" data-needle style={`--x:${stations[0].x}%`}></span>
+      {stations.map((s, i) => (
+        <button type="button" class="station" style={`--x:${s.x}%`} aria-pressed={i === 0 ? 'true' : 'false'} data-goto={i} aria-label={`Slide ${i + 1}: ${s.tab}`}>
+          <span class="st-name">{s.tab}</span><span class="st-bar" aria-hidden="true"><span></span></span>
+        </button>
+      ))}
+    </div>
+    <p class="count" aria-hidden="true"><span data-cur>01</span> / {String(stations.length).padStart(2, '0')}</p>
+    <button type="button" class="icon-btn pause" data-pause aria-label="Pause slideshow">
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <script type="application/json" data-colors set:html={JSON.stringify(stations.map((s) => [s.c1, s.c2, s.tab]))} />
+</section>
+
+<style>
+  @property --c1 { syntax: '<color>'; inherits: true; initial-value: #FF5C93; }
+  @property --c2 { syntax: '<color>'; inherits: true; initial-value: #8E5BFF; }
+  .hero { --dur: 6.5s; position: relative; isolation: isolate; overflow: hidden; background: var(--stage); color: var(--ivory);
+    min-height: 100svh; display: grid; grid-template-rows: 1fr auto; padding-top: var(--header-h); transition: --c1 1.2s var(--ease), --c2 1.2s var(--ease); }
+
+  /* Light: soft colour clouds that drift and take on each slide's colours */
+  .glow { position: absolute; inset: 0; z-index: -2; pointer-events: none; }
+  .glow span { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; }
+  .glow span:nth-child(1) { width: 52vmax; height: 52vmax; right: -12vmax; top: -18vmax; background: radial-gradient(circle, var(--c1), transparent 66%); }
+  .glow span:nth-child(2) { width: 44vmax; height: 44vmax; left: -16vmax; bottom: -20vmax; background: radial-gradient(circle, var(--c2), transparent 66%); opacity: .4; }
+  .glow span:nth-child(3) { width: 30vmax; height: 30vmax; left: 38%; top: 30%; background: radial-gradient(circle, color-mix(in srgb, var(--c1) 60%, #fff), transparent 70%); opacity: .14; }
+  @media (prefers-reduced-motion: no-preference) {
+    .glow span:nth-child(1) { animation: drift-a 18s ease-in-out infinite alternate; }
+    .glow span:nth-child(2) { animation: drift-b 22s ease-in-out infinite alternate; }
+    @keyframes drift-a { to { transform: translate(-6vmax, 5vmax) scale(1.08); } }
+    @keyframes drift-b { to { transform: translate(7vmax, -4vmax) scale(1.1); } }
+  }
+  .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+    background-image: radial-gradient(rgba(255, 214, 232, .16) 1px, transparent 1.4px); background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(70% 60% at 70% 45%, #000, transparent); mask-image: radial-gradient(70% 60% at 70% 45%, #000, transparent); }
+  /* Little sparkles and dots floating up */
+  .sky { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .sky i { position: absolute; left: calc(var(--k) * 7.3% + 2%); bottom: -4%; width: 6px; height: 6px; border-radius: 50%; background: #FFD1E2; opacity: 0; box-shadow: 0 0 10px #FF8FB6; }
+  .sky i:nth-child(3n) { width: 4px; height: 4px; background: #E6DBFF; }
+  @media (prefers-reduced-motion: no-preference) {
+    .sky i { animation: float-up calc(11s + var(--k) * .9s) linear infinite; animation-delay: calc(var(--k) * -1.7s); }
+    @keyframes float-up { 0% { transform: translateY(0); opacity: 0; } 12% { opacity: .8; } 80% { opacity: .5; } 100% { transform: translateY(-105svh) translateX(3vw); opacity: 0; } }
+  }
+
+  .grid { display: grid; align-items: center; gap: clamp(1.4rem, 4vw, 4rem); padding-block: clamp(1rem, 3vh, 2.5rem) .5rem; }
+
+  /* Copy */
+  .copy { display: grid; gap: 1rem; justify-items: start; position: relative; z-index: 2; }
+  .onair { display: inline-flex; align-items: center; gap: .55rem; padding: .42rem .9rem .42rem .7rem; border-radius: 999px; font-family: var(--font-display); font-weight: 650; font-size: .76rem; letter-spacing: .14em; text-transform: uppercase;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,214,232,.22); color: #FFD1E2; backdrop-filter: blur(8px); }
+  .onair .now { letter-spacing: .04em; text-transform: none; font-weight: 600; color: rgba(255,243,246,.8); }
+  .onair .now b { color: var(--ivory); font-weight: 700; }
+  .onair .sep { opacity: .5; }
+  .live { width: 8px; height: 8px; border-radius: 50%; background: #FF3D7F; box-shadow: 0 0 0 0 rgba(255,61,127,.7); }
+  @media (prefers-reduced-motion: no-preference) { .live { animation: live 1.8s ease-out infinite; } @keyframes live { 70% { box-shadow: 0 0 0 9px rgba(255,61,127,0); } 100% { box-shadow: 0 0 0 0 rgba(255,61,127,0); } } }
+  .who { font-family: var(--font-display); font-size: clamp(1rem, .9rem + .4vw, 1.2rem); font-weight: 650; letter-spacing: -0.01em; color: var(--ivory); display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem .6rem; }
+  .who span { font-family: var(--font-hand); font-weight: 600; font-size: 1.35em; color: #FFB3CC; letter-spacing: 0; }
+  .lines { display: grid; width: 100%; }
+  .line { grid-area: 1 / 1; display: grid; gap: .9rem; align-content: start; visibility: hidden; }
+  .line.is-on { visibility: visible; }
+  .title { font-family: var(--font-display); font-weight: 650; font-size: clamp(2.3rem, 1.2rem + 4.2vw, 5.6rem); line-height: .96; letter-spacing: -0.045em; max-width: 12ch; }
+  .ln { display: block; padding-bottom: .06em; }
+  .ln.b { background: linear-gradient(92deg, #FF5C93, color-mix(in srgb, var(--c1) 70%, #FFB3CC)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { color: rgba(255,243,246,.84); font-size: clamp(.95rem, .88rem + .3vw, 1.15rem); line-height: 1.55; max-width: 40ch; }
+  .copy .btn { min-height: 48px; padding: .72em 1.35em; font-size: .94rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .line.is-on .ln { animation: line-up .9s var(--ease-out) both; }
+    .line.is-on .ln.b { animation-delay: .12s; }
+    .line.is-on .sub { animation: fade-up .8s var(--ease-out) .3s both; }
+    @keyframes line-up { from { clip-path: inset(0 0 100% 0); transform: translateY(35%); } to { clip-path: inset(0 0 -12% 0); transform: none; } }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  }
+
+  /* The deck of polaroids */
+  .deck { --w: min(76vw, 300px); position: relative; justify-self: center; width: var(--w); aspect-ratio: 300 / 422; z-index: 1; }
+  .card { --t: rotate(-2deg); position: absolute; inset: 0; margin: 0; background: #FFFDFE; border-radius: 6px; padding: 4.2% 4.2% 0;
+    box-shadow: 0 2px 4px rgba(20,4,30,.2), 0 24px 50px -10px rgba(10,2,20,.6); transform: var(--t); transition: transform .9s var(--ease-out), opacity .9s var(--ease), filter .9s; transform-origin: 50% 60%; }
+  .card[data-pos='0'] { z-index: 4; }
+  .card[data-pos='1'] { --t: translate(9%, -4%) rotate(6deg) scale(.95); z-index: 3; }
+  .card[data-pos='2'] { --t: translate(-10%, 2%) rotate(-9deg) scale(.9); z-index: 2; filter: brightness(.92); }
+  .card[data-pos='3'] { --t: translate(4%, 5%) rotate(11deg) scale(.86); z-index: 1; filter: brightness(.85); }
+  .card.tossed { animation: toss .95s var(--ease-out) both; }
+  @keyframes toss {
+    0% { transform: rotate(-2deg); z-index: 5; }
+    42% { transform: translate(-78%, -6%) rotate(-18deg) scale(.98); z-index: 5; }
+    43% { z-index: 0; }
+    100% { transform: var(--t); z-index: 1; }
+  }
+  .ph { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 2px; background: #F8DCE6; }
+  .ph :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+  .card[data-pos='0'] .ph :global(img) { animation: settle 1.4s var(--ease-out) both; }
+  @keyframes settle { from { transform: scale(1.08); } to { transform: none; } }
+  .static { position: absolute; inset: 0; opacity: 0; pointer-events: none; mix-blend-mode: screen;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .85 0 0 0 0 .92 0 0 0 1.3 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .hero.tuning .card[data-pos='0'] .static { animation: static .5s steps(5) both; }
+  @keyframes static { 0% { opacity: .9; background-position: 0 0; } 50% { opacity: .55; background-position: 40px -30px; } 100% { opacity: 0; background-position: -20px 50px; } }
+  figcaption { display: flex; align-items: center; justify-content: space-between; gap: .6rem; height: clamp(52px, 17%, 78px); padding-inline: .2rem; color: #3B1A44; }
+  .hand { font-family: var(--font-hand); font-weight: 600; font-size: clamp(1.25rem, 1rem + 1vw, 1.9rem); line-height: 1; color: #B3125A; transform: rotate(-3deg); }
+  .tag { font-family: var(--font-display); font-weight: 700; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: #8A6A90; white-space: nowrap; }
+  /* Washi tape */
+  .tape { position: absolute; top: -14px; left: 50%; width: 38%; height: 30px; transform: translateX(-50%) rotate(-4deg); z-index: 2; opacity: .88; border-radius: 2px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0 2px, #000 2px calc(100% - 2px), transparent 0), repeating-linear-gradient(90deg, #000 0 5px, transparent 5px 7px);
+    mask-image: linear-gradient(90deg, #000, #000); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+  .tape--rose { background: repeating-linear-gradient(45deg, #FF9DBF 0 8px, #FFB9D1 8px 16px); }
+  .tape--lilac { background: repeating-linear-gradient(45deg, #CDB8FF 0 8px, #DDD0FF 8px 16px); }
+  .tape--peach { background: repeating-linear-gradient(45deg, #FFB898 0 8px, #FFCDB5 8px 16px); }
+  .tape--butter { background: repeating-linear-gradient(45deg, #FFE08F 0 8px, #FFEAB3 8px 16px); }
+  .spin { position: absolute; z-index: 6; right: -12%; top: -8%; width: clamp(86px, 9vw, 122px); aspect-ratio: 1; color: #fff; pointer-events: none; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FF7AA8, #E8336F 70%); box-shadow: 0 10px 26px -6px rgba(232,51,111,.7), inset 0 0 0 3px rgba(255,255,255,.25); }
+  .spin svg { width: 100%; height: 100%; }
+  .spin text { font-family: var(--font-display); font-weight: 700; font-size: 10.4px; letter-spacing: .14em; fill: currentColor; }
+  .heart { position: absolute; z-index: 6; left: -9%; bottom: 18%; width: clamp(26px, 3vw, 40px); color: #FF5C93; filter: drop-shadow(0 4px 10px rgba(255,92,147,.6)); transform: rotate(-14deg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .spin svg { animation: spin 22s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }
+    .heart { animation: beat 2.4s ease-in-out infinite; } @keyframes beat { 0%, 100% { transform: rotate(-14deg) scale(1); } 12% { transform: rotate(-14deg) scale(1.18); } 24% { transform: rotate(-14deg) scale(1); } 36% { transform: rotate(-14deg) scale(1.1); } }
+  }
+
+  /* The radio dial */
+  .tuner { position: relative; z-index: 3; display: flex; align-items: center; gap: clamp(.6rem, 2vw, 1.4rem); padding-block: .8rem clamp(1rem, 3vh, 1.8rem); }
+  .dial { position: relative; flex: 1; height: 74px; border-radius: 14px; background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border: 1px solid rgba(255,214,232,.16); backdrop-filter: blur(10px); overflow: hidden; }
+  .scale { position: absolute; inset: 7px 4% auto; height: 28px;
+    background: repeating-linear-gradient(90deg, rgba(255,214,232,.38) 0 1px, transparent 1px calc(100% / 40)) bottom / 100% 8px no-repeat,
+                repeating-linear-gradient(90deg, rgba(255,214,232,.7) 0 1.5px, transparent 1.5px calc(100% / 10)) bottom / 100% 13px no-repeat; }
+  .scale span { position: absolute; top: 0; left: var(--x); transform: translateX(-50%); font-family: var(--font-display); font-size: .6rem; font-weight: 600; letter-spacing: .06em; color: rgba(255,214,232,.55); }
+  .scale span:first-child { transform: none; } .scale span:last-child { transform: translateX(-100%); }
+  .needle { position: absolute; top: 5px; height: 34px; left: calc(4% + var(--x) * .92); width: 2px; margin-left: -1px; border-radius: 2px; background: #FF3D7F; box-shadow: 0 0 10px 1px rgba(255,61,127,.9), 0 0 24px rgba(255,61,127,.5);
+    transition: left 1s cubic-bezier(.5, 1.6, .4, 1); z-index: 2; pointer-events: none; }
+  .station { all: unset; box-sizing: border-box; cursor: pointer; position: absolute; bottom: 3px; left: calc(4% + var(--x) * .92); transform: translateX(-50%); display: grid; justify-items: center; gap: 4px; padding: 4px 8px; border-radius: 8px; z-index: 3; min-width: 44px; min-height: 30px; }
+  .st-name { font-family: var(--font-display); font-weight: 650; font-size: clamp(.74rem, .7rem + .2vw, .9rem); color: rgba(255,243,246,.6); transition: color .3s; }
+  .station:hover .st-name, .station[aria-pressed='true'] .st-name { color: var(--ivory); }
+  .station:focus-visible { outline: 3px solid var(--copper); outline-offset: 1px; }
+  .st-bar { width: 26px; height: 2px; border-radius: 2px; background: rgba(255,255,255,.18); overflow: hidden; }
+  .st-bar span { display: block; height: 100%; background: var(--copper); transform: scaleX(0); transform-origin: left; }
+  .station[aria-pressed='true'] .st-bar span { transform: scaleX(1); }
+  .hero.playing .station[aria-pressed='true'] .st-bar span { animation: fill var(--dur) linear both; }
+  .hero.paused .station[aria-pressed='true'] .st-bar span { animation-play-state: paused; }
+  @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .count { font-family: var(--font-display); font-size: .85rem; font-weight: 600; color: rgba(255,243,246,.7); font-variant-numeric: tabular-nums; }
+  .count span { color: var(--ivory); }
+  .pause { border-color: rgba(255,255,255,.3); color: var(--ivory); flex: none; width: 44px; height: 44px; }
+  .pause .i-play { display: none; }
+  .hero:not(.playing) .i-pause { display: none; }
+  .hero:not(.playing) .i-play { display: block; }
+
+  @media (max-width: 959px) {
+    .grid { grid-template-rows: auto auto; }
+    .deck { order: -1; margin-top: 1.2rem; --w: min(62vw, 300px, calc((100svh - var(--header-h)) * .36)); }
+    .copy { gap: .8rem; }
+    .who { display: none; }
+    .title { font-size: clamp(2.1rem, 1.3rem + 4vw, 3.4rem); max-width: 14ch; }
+    .sub { font-size: .95rem; }
+    .spin { right: -20%; top: -6%; }
+    .count { display: none; }
+    .scale span { display: none; }
+    .scale { top: 4px; height: 20px; }
+    .needle { top: 3px; height: 26px; }
+    .dial { height: 66px; }
+  }
+  @media (max-width: 380px) { .onair .sep, .onair .now { display: none; } }
+  @media (min-width: 960px) {
+    .grid { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); }
+    .deck { --w: min(30vw, 420px, calc((100svh - var(--header-h) - 210px) * .71)); justify-self: center; margin-top: 1.2rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .needle, .hero { transition: none; }
+    .card.tossed { animation: none; }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) {
+    const cards = [...hero.querySelectorAll<HTMLElement>('[data-card]')];
+    const lines = [...hero.querySelectorAll<HTMLElement>('[data-line]')];
+    const btns = [...hero.querySelectorAll<HTMLButtonElement>('[data-goto]')];
+    const needle = hero.querySelector<HTMLElement>('[data-needle]')!;
+    const now = hero.querySelector<HTMLElement>('[data-now]')!;
+    const cur = hero.querySelector<HTMLElement>('[data-cur]')!;
+    const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-pause]')!;
+    const colors: [string, string, string][] = JSON.parse(hero.querySelector('[data-colors]')!.textContent || '[]');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DUR = 6500;
+    const n = cards.length;
+    let i = 0, timer = 0, userPaused = reduce, focusInside = false, hover = false;
+    const restartBar = () => { const s = btns[i].querySelector<HTMLElement>('.st-bar span'); if (s) { s.style.animation = 'none'; void s.offsetWidth; s.style.animation = ''; } };
+    const playing = () => !userPaused && !focusInside && !hover && !document.hidden;
+    const schedule = () => {
+      clearTimeout(timer);
+      hero.classList.toggle('playing', !userPaused);
+      hero.classList.toggle('paused', !userPaused && !playing());
+      if (playing()) timer = window.setTimeout(() => show(i + 1), DUR);
+    };
+    const show = (to: number) => {
+      const next = (to + n) % n;
+      if (next === i) { schedule(); return; }
+      const prev = i; i = next;
+      // Re-order the pile so the chosen card is on top; the old top card is tossed to the back.
+      cards.forEach((c, k) => {
+        const pos = (k - i + n) % n;
+        c.classList.remove('tossed');
+        if (k === prev && !reduce) { void c.offsetWidth; c.classList.add('tossed'); }
+        c.dataset.pos = String(k === prev ? n - 1 : pos);
+        if (k === prev) c.dataset.pos = String(n - 1);
+        c.setAttribute('aria-hidden', k === i ? 'false' : 'true');
+      });
+      // Keep the remaining order consistent behind the top card.
+      let p = 1;
+      for (let s = 1; s < n; s++) { const k = (i + s) % n; if (k !== prev) cards[k].dataset.pos = String(p++); }
+      lines.forEach((l, k) => { const on = k === i; l.classList.toggle('is-on', on); l.setAttribute('aria-hidden', on ? 'false' : 'true'); });
+      btns.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
+      needle.style.setProperty('--x', btns[i].style.getPropertyValue('--x'));
+      hero.style.setProperty('--c1', colors[i][0]); hero.style.setProperty('--c2', colors[i][1]);
+      now.textContent = colors[i][2];
+      cur.textContent = String(i + 1).padStart(2, '0');
+      if (!reduce) { hero.classList.remove('tuning'); void hero.offsetWidth; hero.classList.add('tuning'); }
+      restartBar(); schedule();
+    };
+    btns.forEach((b, k) => b.addEventListener('click', () => show(k)));
+    hero.querySelector('[data-deck]')!.addEventListener('click', () => show(i + 1));
+    pauseBtn.addEventListener('click', () => {
+      userPaused = !userPaused;
+      pauseBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+      if (!userPaused) restartBar();
+      schedule();
+    });
+    pauseBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+    hero.addEventListener('focusin', (e) => { const t = e.target as HTMLElement; if (t !== pauseBtn && !t.closest('[data-goto]')) { focusInside = true; schedule(); } });
+    hero.addEventListener('focusout', (e) => { if (!hero.contains(e.relatedTarget as Node)) { focusInside = false; schedule(); } });
+    const deck = hero.querySelector<HTMLElement>('[data-deck]')!;
+    deck.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hover = true; schedule(); } });
+    deck.addEventListener('pointerleave', () => { if (hover) { hover = false; schedule(); } });
+    document.addEventListener('visibilitychange', schedule);
+    // Swipe the pile on touch screens.
+    let sx = 0, sy = 0;
+    deck.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    deck.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) show(i + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+    schedule();
+  }
+</script>

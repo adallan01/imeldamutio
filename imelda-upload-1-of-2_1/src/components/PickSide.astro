@@ -1,0 +1,47 @@
+---
+/** "Pick a side": a tiny, honest poll. No counts are shown (there is no backend); it simply invites the
+ *  visitor to take a side and continue the conversation on Instagram. The choice is remembered locally. */
+import { site, type Dilemma } from '../lib/data';
+interface Props { clip: Dilemma }
+const { clip } = Astro.props;
+const ig = site.social.find((s) => s.label === 'Instagram');
+---
+{clip.options.length === 2 && (
+  <div class="pick" data-pick={clip.id}>
+    <p class="pk">Today's dilemma</p>
+    <p class="pq">{clip.question}</p>
+    <div class="opts" role="group" aria-label="Pick a side">
+      {clip.options.map((o, i) => <button type="button" class:list={['opt', `o${i}`]} aria-pressed="false" data-opt={o}>{o}</button>)}
+    </div>
+    <p class="res" aria-live="polite" data-res></p>
+    {ig && <a class="text-link res-link" href={ig.url} target="_blank" rel="me noopener" hidden data-res-link>Defend your answer in my comments<span class="sr-only"> (opens in a new tab)</span></a>}
+  </div>
+)}
+<style>
+  .pick { position: relative; display: grid; gap: .9rem; padding: clamp(1.4rem, 1rem + 2vw, 2.2rem); border-radius: var(--r-lg); background: color-mix(in srgb, var(--surface) 82%, transparent); border: 1px solid var(--line); box-shadow: var(--shadow); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .pk { font-family: var(--font-hand); font-weight: 600; font-size: 1.6rem; color: var(--accent-text); line-height: 1; transform: rotate(-2deg); }
+  .pq { font-family: var(--font-display); font-weight: 650; font-size: var(--step-2); line-height: 1.08; letter-spacing: -0.03em; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+  .opt { min-height: 56px; border-radius: 999px; border: 2px solid var(--text); background: transparent; color: var(--text); font-family: var(--font-display); font-weight: 700; font-size: 1rem; padding: .6em 1em; transition: transform .3s var(--ease-out), background-color .25s, color .25s, border-color .25s; }
+  .opt:hover { transform: translateY(-2px) rotate(-1deg); }
+  .o0[aria-pressed='true'] { background: var(--rose-btn); border-color: var(--rose-btn); color: #fff; }
+  .o1[aria-pressed='true'] { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .res { font-weight: 700; min-height: 1.5em; }
+  .res-link { font-weight: 700; justify-self: start; }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pick]').forEach((p) => {
+    const key = `dilemma-${p.dataset.pick}`;
+    const res = p.querySelector<HTMLElement>('[data-res]')!;
+    const link = p.querySelector<HTMLElement>('[data-res-link]');
+    const btns = [...p.querySelectorAll<HTMLButtonElement>('[data-opt]')];
+    const set = (o: string, save: boolean) => {
+      btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.opt === o)));
+      res.textContent = `You picked: ${o}. Bold choice!`;
+      if (link) link.hidden = false;
+      if (save) { try { localStorage.setItem(key, o); } catch {} }
+    };
+    btns.forEach((b) => b.addEventListener('click', () => set(b.dataset.opt!, true)));
+    try { const saved = localStorage.getItem(key); if (saved && btns.some((b) => b.dataset.opt === saved)) set(saved, false); } catch {}
+  });
+</script>

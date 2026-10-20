@@ -1,0 +1,112 @@
+[
+  {
+    "id": "voice-over",
+    "name": "Voice-overs",
+    "short": "A warm, natural voice for your commercial, film, explainer or podcast.",
+    "need": "A script that has to sound human: friendly, clear and easy to trust, whether it runs for ten seconds or ten minutes.",
+    "role": "I read your script the way I talk to listeners every weekday: conversational, upbeat and clear. I take direction, try different reads and deliver clean audio for your edit.",
+    "contributes": [
+      "Script read-through and pronunciation checks, names included",
+      "Two or three reads in different moods, so you can choose",
+      "Pickups and small changes after your review",
+      "Reads timed to your video or your ad slot"
+    ],
+    "outcome": "A voice your audience listens to, not one they skip.",
+    "formats": ["TV and radio commercials", "Explainer videos", "Corporate films", "Documentaries", "Podcast intros", "Phone and IVR messages"],
+    "tags": ["voice"],
+    "photo": "imelda-stripes",
+    "stage": "spotlight",
+    "note": "Availability depends on my broadcasting schedule and is subject to employer policy."
+  },
+  {
+    "id": "ads",
+    "name": "Ads & Brand Campaigns",
+    "short": "Ads and brand content that sound like a friend's recommendation.",
+    "need": "A campaign that needs a trusted, relatable voice and face for radio, TV, social media or a product launch.",
+    "role": "I bring personality to your brand message without losing the facts: scripted spots, social videos and launch content that feel natural, not read off a card.",
+    "contributes": [
+      "Your key message kept clear and on brief",
+      "A tone that fits your brand: playful, warm or polished",
+      "Short-form video presenting for social media",
+      "On-camera and voice work for the same campaign"
+    ],
+    "outcome": "A message people remember and repeat.",
+    "formats": ["Radio and TV spots", "Social media ads", "Product launches", "Brand campaigns", "Presenter-led videos"],
+    "tags": ["voice", "brand"],
+    "photo": "imelda-pink",
+    "stage": "sparkle",
+    "note": "Brand work is agreed case by case and is subject to employer policy."
+  },
+  {
+    "id": "mc",
+    "name": "MC for Galas, Awards & Celebrations",
+    "short": "Evenings with energy, warmth and a steady hand on the programme.",
+    "need": "A night with awards, performances, speeches and guests to acknowledge, and one chance to get it right.",
+    "role": "As MC I set the tone, keep the programme moving and make every guest and winner feel included.",
+    "contributes": [
+      "Programme and cues worked through with your team",
+      "Names, titles and protocol confirmed in advance",
+      "Energy pitched to the room",
+      "Calm adjustments when the running order changes"
+    ],
+    "outcome": "An evening that flows, and guests who leave talking about it.",
+    "formats": ["Award shows", "Galas", "Dinners", "Launch nights", "Celebrations"],
+    "tags": ["mc"],
+    "photo": "imelda-cardigan",
+    "stage": "gala"
+  },
+  {
+    "id": "hosting",
+    "name": "Event Hosting",
+    "short": "Corporate events, conferences, activations and festivals that feel warm, clear and well run.",
+    "need": "A programme with speakers, sessions and an audience that needs to stay with you from the opening to the close.",
+    "role": "I guide the programme flow: opening the day, introducing speakers clearly, linking sessions and keeping the room connected.",
+    "contributes": [
+      "Clear, confident delivery on the microphone",
+      "Speaker introductions with names and titles checked",
+      "Natural audience interaction",
+      "Quick thinking when the programme shifts"
+    ],
+    "outcome": "A day that runs smoothly, with an audience that stays engaged.",
+    "formats": ["Corporate events", "Conferences", "Brand activations", "Festivals", "Staff days"],
+    "tags": ["corporate", "brand"],
+    "photo": "imelda-coral",
+    "stage": "event-hall"
+  },
+  {
+    "id": "panels",
+    "name": "Panels & Interviews",
+    "short": "Panels, interviews and audience sessions that feel like real conversations.",
+    "need": "Guests with something to say, a limited slot and an audience that wants to be part of it.",
+    "role": "Interviewing guests is what I do on air every week. I ask clear questions, follow up on what's said and bring the audience in.",
+    "contributes": [
+      "Questions prepared around your theme",
+      "Every guest gets a fair share of time",
+      "Audience questions kept moving and on topic",
+      "A clear close with the key takeaways"
+    ],
+    "outcome": "A conversation people remember, and guests who feel looked after.",
+    "formats": ["Panel discussions", "Fireside chats", "Live interviews", "Audience Q&A", "Podcasts and webcasts"],
+    "tags": ["moderation"],
+    "photo": "imelda-trench",
+    "stage": "hexsphere"
+  },
+  {
+    "id": "workshops",
+    "name": "Workshops & Community Events",
+    "short": "Sessions where people learn, share and take part.",
+    "need": "A session that has to inform people, keep them involved and finish on time.",
+    "role": "I keep the session on track, bring quieter voices in and make sure everyone feels included.",
+    "contributes": [
+      "Clear framing of each part of the session",
+      "Timekeeping that stays friendly",
+      "Inviting participation without putting people on the spot",
+      "A warm, relatable tone for community audiences"
+    ],
+    "outcome": "People who leave informed, involved and glad they came.",
+    "formats": ["Workshops", "Training sessions", "Community events", "Pitch sessions"],
+    "tags": ["community"],
+    "photo": "imelda-vest",
+    "stage": "brick"
+  }
+]

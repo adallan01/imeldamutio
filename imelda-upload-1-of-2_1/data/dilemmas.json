@@ -1,0 +1,72 @@
+{
+  "_note": "Dilemma of the Day clips supplied by Adala Allan on 19 Oct 2026 (from Imelda's Instagram). Re-encoded to 720 x 900; the station logo and show artwork are cropped out. Captions are burned into the video. Files: public/video/dilemma-<id>.mp4 and .webp poster.",
+  "clips": [
+    {
+      "id": "pesa-or-peace",
+      "question": "Pesa ama peace of mind?",
+      "sub": "Money or peace of mind: which one would you choose?",
+      "options": [
+        "Pesa",
+        "Peace of mind"
+      ],
+      "duration": "0:28"
+    },
+    {
+      "id": "worth-the-debt",
+      "question": "Which one is worth getting into debt for?",
+      "sub": "A dream wedding or a dream destination.",
+      "options": [
+        "Dream wedding",
+        "Dream destination"
+      ],
+      "duration": "0:37"
+    },
+    {
+      "id": "children-or-spouse",
+      "question": "Who should come first in your life?",
+      "sub": "Your children or your spouse.",
+      "options": [
+        "My children",
+        "My spouse"
+      ],
+      "duration": "0:18"
+    },
+    {
+      "id": "back-to-the-job",
+      "question": "Would you go back to a job you just got fired from?",
+      "sub": "Your boss calls and says: come back.",
+      "options": [
+        "I'd go back",
+        "Never"
+      ],
+      "duration": "0:32"
+    },
+    {
+      "id": "job-title",
+      "question": "How important is a job title to you?",
+      "sub": "The big title, or the bigger salary with no title.",
+      "options": [
+        "The title",
+        "The salary"
+      ],
+      "duration": "0:48"
+    },
+    {
+      "id": "invest-or-build-home",
+      "question": "Invest in yourself first, or build your parents a home?",
+      "sub": "When the money starts coming in, what comes first: securing your future or building your parents' ancestral home?",
+      "options": [
+        "Invest in me",
+        "Build the home"
+      ],
+      "duration": "0:59"
+    },
+    {
+      "id": "superstition",
+      "question": "What did you believe as a child that turned out to be a superstition?",
+      "sub": "The things we believed growing up were insane.",
+      "options": [],
+      "duration": "1:19"
+    }
+  ]
+}

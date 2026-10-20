@@ -1,0 +1,78 @@
+{
+  "name": "Imelda Mutio",
+  "signature": "MC, Host and Voice-over Artist",
+  "signOff": "Good conversations. Great audiences. Real impact.",
+  "location": "Nairobi, Kenya",
+  "defaultDescription": "Imelda Mutio is a Nairobi MC, event host and voice-over artist. She presents the Mid-Morning Show on Classic 105 and brings the warmth of live radio to events, brand campaigns, ads and voice-overs.",
+  "contact": {
+    "phoneDisplay": "+254 746 135 441",
+    "phoneE164": "+254746135441",
+    "email": "mutioimelda1@gmail.com",
+    "whatsappEnabled": false,
+    "_note": "Phone from Imelda's portfolio PDF. The PDF shows the email cut off as 'mutioimelda1'; mutioimelda1@gmail.com was confirmed by Adala on 18 Oct 2026. Confirm WhatsApp before switching it on."
+  },
+  "social": [
+    {
+      "label": "Instagram",
+      "handle": "@imelda_mutio",
+      "url": "https://www.instagram.com/imelda_mutio/"
+    },
+    {
+      "label": "LinkedIn",
+      "handle": "Imelda Mutio",
+      "url": "https://ke.linkedin.com/in/imelda-mutio-bb639323b"
+    },
+    {
+      "label": "X",
+      "handle": "@ImeldaMutio",
+      "url": "https://x.com/ImeldaMutio"
+    }
+  ],
+  "showreel": {
+    "youtubeId": null,
+    "title": "Imelda Mutio: Showreel",
+    "description": "",
+    "uploadDate": "",
+    "_note": "When a showreel exists on YouTube, add its ID here. The site then adds a Watch section automatically."
+  },
+  "form": {
+    "mode": "mailto",
+    "endpoint": "",
+    "showBudget": false,
+    "budgetBands": [
+      "Under KES 50,000",
+      "KES 50,000 to 100,000",
+      "KES 100,000 to 250,000",
+      "Above KES 250,000",
+      "Prefer to discuss"
+    ],
+    "_note": "mode: 'mailto' (opens visitor's email app, pre-filled), 'endpoint' (POST JSON to a form service; set endpoint or PUBLIC_ENQUIRY_ENDPOINT), or 'netlify' (Netlify Forms). See HANDOVER.md."
+  },
+  "testimonials": [],
+  "disclaimer": "Bookings are made directly with me. Independent engagements are not engagements of, or endorsed by, any media organisation I work with. Programme and station names are used for identification only, and external engagements are subject to applicable professional and employer policies.",
+  "story": {
+    "_note": "Career story as told by Adala Allan on 19 Oct 2026. Confirm the name of the late-night show and the years with Imelda before launch.",
+    "steps": [
+      {
+        "k": "intern",
+        "label": "The intern",
+        "text": "I walked into Classic 105 as an intern, learning from some of the biggest voices in Kenyan radio."
+      },
+      {
+        "k": "night",
+        "label": "The midnight show",
+        "text": "Hard work and a lot of determination earned me my own slot: the midnight show, keeping listeners company long after everyone else had signed off."
+      },
+      {
+        "k": "day",
+        "label": "Daytime",
+        "text": "Before long I moved to daytime. Today I host the Mid-Morning Show, weekdays from 10am to 3pm, straight after Maina and King'ang'i's morning show."
+      },
+      {
+        "k": "now",
+        "label": "Beyond the studio",
+        "text": "Off air, I bring that same voice to your brand and your stage: voice-overs, ads, hosting and MC work."
+      }
+    ]
+  }
+}

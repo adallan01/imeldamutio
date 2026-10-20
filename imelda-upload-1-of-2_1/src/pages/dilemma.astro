@@ -1,0 +1,120 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import MediaCard from '../components/MediaCard.astro';
+import DilemmaReel from '../components/DilemmaReel.astro';
+import PickSide from '../components/PickSide.astro';
+import Twinkles from '../components/Twinkles.astro';
+import { site, shows, mediaItems, dilemmas } from '../lib/data';
+import { photos } from '../lib/photos';
+
+const show = shows[0];
+const onRadio = [
+  'Present and link live radio segments',
+  'Interview guests and personalities',
+  'Engage listeners through conversations and interactive features',
+  'Tell stories and create relatable on-air content',
+  'Introduce and tease music, features and upcoming programmes',
+  'Think quickly and respond naturally in a live environment',
+];
+const ig = site.social.find((x) => x.label === 'Instagram');
+const videoSchema = dilemmas.map((c) => ({
+  '@context': 'https://schema.org', '@type': 'VideoObject', name: `Dilemma of the Day: ${c.question}`, description: c.sub,
+  thumbnailUrl: new URL(`/video/dilemma-${c.id}.webp`, Astro.site).href, contentUrl: new URL(`/video/dilemma-${c.id}.mp4`, Astro.site).href,
+  duration: `PT${c.duration.split(':')[0]}M${c.duration.split(':')[1]}S`, uploadDate: '2026-10-19', creator: { '@id': new URL('/#imelda-mutio', Astro.site).href },
+}));
+---
+<Base title="Dilemma of the Day" description="Watch Imelda Mutio's Dilemma of the Day: one question, two hard choices and everyone weighing in. Plus the Mid-Morning Show, weekdays from 10am to 3pm." schema={videoSchema}>
+  <PageHero kicker="Dilemma of the Day" title="One question. Two hard choices." lede="Every weekday on the Mid-Morning Show. Watch a few, pick a side, then tell me why." stage="sparkle" cutout="vest" word="DILEMMA" />
+
+  <section class="room section" aria-labelledby="clips-h">
+    <Twinkles />
+    <div class="wrap">
+      <div class="head head--split">
+        <div><p class="kicker">The clips</p><h2 id="clips-h" class="h1" data-split>Press play. <span class="serif">Then pick a side.</span></h2></div>
+        <p class="lede reveal">Captions are on every clip, so you can watch with the sound off. Only one plays at a time.</p>
+      </div>
+      <ul class="reels">{dilemmas.map((c, i) => <DilemmaReel clip={c} n={i + 1} eager={i < 3} />)}</ul>
+    </div>
+  </section>
+
+  <section class="room-2 section" aria-labelledby="pick-h">
+    <div class="wrap picks">
+      <div class="picks-copy">
+        <p class="kicker">Your turn</p>
+        <h2 id="pick-h" class="h1" data-split>Where do you stand?</h2>
+        <p class="lede reveal">No wrong answers, only strong opinions. Pick yours, then come and defend it in my comments.</p>
+        {ig && <a class="btn btn--primary reveal" href={ig.url} target="_blank" rel="me noopener">Join the conversation<span class="sr-only"> (opens in a new tab)</span></a>}
+      </div>
+      <div class="pick-list">{dilemmas.filter((c) => c.options.length === 2).slice(0, 3).map((c, i) => <div class="reveal" style={`--d:${i * 0.1}s`}><PickSide clip={c} /></div>)}</div>
+    </div>
+  </section>
+
+  <section class="stage section grain onradio" aria-labelledby="show-h">
+    <div class="beams" aria-hidden="true"></div>
+    <div class="wrap show">
+      <div class="show-img arch reveal">
+        <Image src={photos['imelda-trench'].src} alt={photos['imelda-trench'].alt} widths={[500, 900, 1200]} sizes="(min-width: 900px) 40vw, 92vw" style={`object-position:${photos['imelda-trench'].pos}`} loading="lazy" />
+        <span class="live" aria-hidden="true"><i></i>On air</span>
+      </div>
+      <div class="show-body reveal" style="--d:.15s">
+        <span class="badge badge--media">Radio</span>
+        <h2 id="show-h" class="h2" data-split>The Mid-Morning Show</h2>
+        <p class="when">{show?.displayDate}</p>
+        <p class="lede">On radio I combine music, personality and conversation to create an engaging mid-morning listen. My show follows Maina and King'ang'i's morning show on Classic 105, and my style is conversational, upbeat and audience-focused, so listeners feel part of the conversation.</p>
+        <h3 class="sub-h">What I do on radio</h3>
+        <ul class="dots">{onRadio.map((r) => <li>{r}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  {mediaItems.length > 0 && (
+    <section class="room section" aria-labelledby="press-h">
+      <div class="wrap">
+        <div class="head head--split">
+          <div><p class="kicker">Press</p><h2 id="press-h" class="h1" data-split>In the press.</h2></div>
+          <p class="lede reveal">Each item links to the original publisher. Coverage isn't an endorsement of my services by the publishers listed.</p>
+        </div>
+        <div class="grid grid--3">{mediaItems.map((m) => <MediaCard item={m} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="room section" aria-labelledby="org-h">
+    <div class="wrap">
+      <aside class="org">
+        <div>
+          <h2 id="org-h" class="h3">Did I host your event or voice your ad?</h2>
+          <p class="muted">Share a programme, link or photo and I'll add it here with its source.</p>
+        </div>
+        <a class="btn btn--ghost" href={`mailto:${site.contact.email}?subject=${encodeURIComponent('A credit for my website')}`}>Send the details</a>
+      </aside>
+    </div>
+  </section>
+</Base>
+<style>
+  .reels { list-style: none; padding: 0; display: grid; gap: clamp(1.5rem, 1rem + 2vw, 2.6rem) clamp(1rem, .6rem + 1.6vw, 1.8rem); grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); }
+  @media (max-width: 559px) { .reels { grid-template-columns: 1fr 1fr; gap: 1.4rem .8rem; } }
+  .picks { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 960px) { .picks { grid-template-columns: .85fr 1.15fr; gap: 4rem; } .picks-copy { position: sticky; top: calc(var(--header-h) + 2rem); } }
+  .picks-copy { display: grid; gap: 1.2rem; justify-items: start; }
+  .pick-list { display: grid; gap: 1.25rem; }
+  .show { display: grid; gap: clamp(2rem, 1.5rem + 3vw, 4.5rem); align-items: center; }
+  @media (min-width: 900px) { .show { grid-template-columns: .9fr 1.1fr; } }
+  .show-img { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--stage-2); box-shadow: 0 40px 100px -40px rgba(255,92,147,.55); border: 6px solid rgba(255,255,255,.9); max-width: 480px; width: 100%; justify-self: center; }
+  .show-img :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .live { position: absolute; z-index: 3; left: 50%; top: 1.2rem; transform: translateX(-50%); display: inline-flex; align-items: center; gap: .5rem; padding: .35em .9em; border-radius: 999px; background: rgba(21,10,36,.8); color: var(--ivory); font-family: var(--font-display); font-weight: 700; font-size: .82rem; }
+  .live i { width: 9px; height: 9px; border-radius: 50%; background: #FF4D3D; box-shadow: 0 0 10px #FF4D3D; animation: onair 1.6s ease-in-out infinite; }
+  @keyframes onair { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .live i { animation: none; } }
+  .show-body { display: grid; gap: 1rem; justify-items: start; }
+  .when { color: #FF9CC2; font-weight: 700; font-family: var(--font-display); font-size: var(--step-1); }
+  .show-body .lede { color: rgba(255,243,246,.86); }
+  .sub-h { font-size: var(--step-1); margin-top: .6rem; }
+  .dots { list-style: none; padding: 0; display: grid; gap: .55rem; }
+  .dots li { position: relative; padding-left: 1.6rem; }
+  .dots li::before { content: ''; position: absolute; left: 0; top: .5em; width: 9px; height: 9px; border-radius: 50%; background: var(--copper); box-shadow: 0 0 10px var(--copper); }
+  .org { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between; align-items: center; padding: 2rem; border-radius: var(--r-lg); border: 1.5px dashed color-mix(in srgb, var(--copper) 55%, transparent); background: color-mix(in srgb, var(--surface) 60%, transparent); }
+  .org > div { display: grid; gap: .5rem; max-width: 52ch; }
+</style>

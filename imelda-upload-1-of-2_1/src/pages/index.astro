@@ -1,0 +1,339 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HeroTuner from '../components/HeroTuner.astro';
+import Rail from '../components/Rail.astro';
+import Marquee from '../components/Marquee.astro';
+import ToneImage from '../components/ToneImage.astro';
+import Twinkles from '../components/Twinkles.astro';
+import VoicePlayer from '../components/VoicePlayer.astro';
+import DilemmaReel from '../components/DilemmaReel.astro';
+import PickSide from '../components/PickSide.astro';
+import { site, services, featuredMedia, dilemmas } from '../lib/data';
+import { photos, stages, type PhotoKey } from '../lib/photos';
+
+const strengths: { key: string; title: string; text: string; photo: PhotoKey }[] = [
+  { key: 'relatable', title: 'Relatable', text: 'I connect easily with different audiences. On radio I talk with listeners every day, and I bring that same easy warmth to your room and your brand.', photo: 'imelda-vest' },
+  { key: 'engaging', title: 'Engaging', text: 'I keep audiences informed, entertained and involved: asking, listening and bringing people into the conversation.', photo: 'imelda-pink' },
+  { key: 'versatile', title: 'Versatile', text: 'A voice-over in the morning, a panel in the afternoon, a gala at night. I adapt to the room, the script and the brief.', photo: 'family-fest' },
+  { key: 'professional', title: 'Professional', text: 'Reliable, well prepared and adaptable. Live radio taught me to think on my feet and keep things moving when plans change.', photo: 'imelda-trench' },
+];
+const voiceList = ['TV and radio commercials', 'Explainer and corporate videos', 'Social media ads', 'Podcast intros and brand reads', 'Phone and IVR messages'];
+const moments: { key: PhotoKey; cap: string; label: string }[] = [
+  { key: 'crowd-orange', label: 'Hosting', cap: 'Out among the audience, mic in hand' },
+  { key: 'stage-trio', label: 'On stage', cap: 'Bringing guests into the conversation' },
+  { key: 'family-fest', label: 'Festival', cap: 'An outdoor stage with a live band' },
+];
+const press = featuredMedia[0];
+const ig = site.social.find((x) => x.label === 'Instagram');
+const story = site.story.steps;
+---
+<Base title="Imelda Mutio">
+  <HeroTuner />
+
+  <Marquee words={['Voice-overs', 'MC', 'Event host', 'Ads', 'Panels', 'Storyteller']} />
+
+  <!-- HELLO: who I am, in four steps -->
+  <section class="room section hello" aria-labelledby="hi-h">
+    <Twinkles />
+    <div class="wrap hello-grid">
+      <div class="collage" aria-hidden="true">
+        <figure class="pol p1 reveal"><Image src={photos['imelda-vest'].src} alt="" widths={[400, 700, 900]} sizes="(min-width: 960px) 24vw, 46vw" style={`object-position:${photos['imelda-vest'].pos}`} /></figure>
+        <figure class="pol p2 reveal" style="--d:.15s"><Image src={photos['imelda-stripes'].src} alt="" widths={[400, 700, 900]} sizes="(min-width: 960px) 24vw, 46vw" style={`object-position:${photos['imelda-stripes'].pos}`} /></figure>
+        <figure class="pol p3 reveal" style="--d:.3s"><Image src={photos['imelda-overhead'].src} alt="" widths={[400, 700, 1000]} sizes="(min-width: 960px) 26vw, 60vw" style={`object-position:${photos['imelda-overhead'].pos}`} /></figure>
+        <span class="sticker s1">✦ intern to daytime radio</span>
+      </div>
+      <div class="hello-copy">
+        <p class="note reveal">hello, lovely!</p>
+        <h2 id="hi-h" class="h1" data-split>I'm Imelda. <span class="serif">Nice to meet you.</span></h2>
+        <p class="lede reveal" style="--d:.1s">I'm a radio presenter, MC, event host and voice-over artist in Nairobi. My style is warm, upbeat and conversational, so the people listening feel part of it.</p>
+        <ol class="steps-mini">
+          {story.map((st, i) => (
+            <li class="reveal" style={`--d:${0.15 + i * 0.08}s`}><span class="dot" aria-hidden="true">{i + 1}</span><span><strong>{st.label}.</strong> {st.text}</span></li>
+          ))}
+        </ol>
+        <a href="/about/" class="btn btn--ghost reveal" style="--d:.4s">Read my story</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES RAIL -->
+  <section class="room-2 section rail-sec" aria-labelledby="svc-h">
+    <Rail label="Services" id="svc-rail">
+      <div slot="head" class="rail-head">
+        <p class="kicker reveal">Book me for</p>
+        <h2 id="svc-h" class="h1" data-split>Voice, ads, mic and stage. <span class="muted">Pick yours.</span></h2>
+      </div>
+      {services.map((s, i) => {
+        const p = photos[s.photo as PhotoKey];
+        return (
+          <li class="svc reveal" style={`--d:${i * 0.08}s`}>
+            <a href={`/services/#${s.id}`} class="svc-link tone-host">
+              <ToneImage src={p.src} alt={p.alt} widths={[420, 700, 900]} sizes="(min-width: 900px) 380px, 80vw" pos={p.pos} />
+              <span class="svc-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="svc-body">
+                <span class="svc-name">{s.name}</span>
+                <span class="svc-short">{s.short}</span>
+                <span class="svc-go">Explore <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </Rail>
+  </section>
+
+  <!-- VOICE: hear it -->
+  <section class="stage section voice grain" aria-labelledby="vo-h">
+    <div class="sbg" aria-hidden="true" style="--veil:55%"><Image src={stages.sparkle} alt="" widths={[800, 1400, 2000]} sizes="100vw" loading="lazy" /></div>
+    <Twinkles items={[{ x: 6, y: 18, s: 20 }, { x: 92, y: 14, s: 14, c: 'var(--lilac)', d: .8 }, { x: 48, y: 88, s: 12, c: 'var(--peach)', d: 1.6 }]} />
+    <div class="wrap vo-grid">
+      <div class="vo-copy">
+        <p class="kicker reveal">Voice-overs & ads</p>
+        <h2 id="vo-h" class="h1" data-split>Your script, in a voice people <span class="serif">trust.</span></h2>
+        <p class="lede reveal" style="--d:.1s">Five hours of live radio every weekday means I know how to sound like a friend, not a voice reading a card. I bring that to your commercial, your explainer and your brand campaign.</p>
+        <div class="reveal" style="--d:.15s"><VoicePlayer /></div>
+        <ul class="vo-list">{voiceList.map((v, i) => <li class="reveal" style={`--d:${0.2 + i * 0.05}s`}>{v}</li>)}</ul>
+        <div class="btn-row reveal" style="--d:.35s">
+          <a href={`/contact/?service=${encodeURIComponent('Voice-overs')}`} class="btn btn--primary">Book a voice-over</a>
+          <a href="/services/#ads" class="btn btn--glass">Ads & brand campaigns</a>
+        </div>
+      </div>
+      <div class="vo-art reveal" style="--d:.2s">
+        <div class="vo-frame arch"><Image src={photos['imelda-stripes'].src} alt={photos['imelda-stripes'].alt} widths={[500, 800, 1100]} sizes="(min-width: 960px) 38vw, 88vw" style={`object-position:${photos['imelda-stripes'].pos}`} loading="lazy" /></div>
+        <span class="sticker vo-s" style="--rot:6deg">mic check ✦</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DILEMMA OF THE DAY -->
+  <section class="room section dil" aria-labelledby="dil-h">
+    <Twinkles items={[{ x: 4, y: 8, s: 18 }, { x: 95, y: 30, s: 14, c: 'var(--lilac)', d: 1 }]} />
+    <Rail label="Dilemma of the Day clips" id="dil-rail">
+      <div slot="head" class="rail-head">
+        <p class="kicker reveal">On the show</p>
+        <h2 id="dil-h" class="h1" data-split>Dilemma of the Day. <span class="muted">Pick a side.</span></h2>
+        <p class="lede reveal" style="--d:.1s">Every weekday I put one question to listeners, with two hard choices, and let them argue it out on air and online. It's the same skill I bring to a panel: ask what people actually want to talk about.</p>
+      </div>
+      {dilemmas.map((c, i) => <DilemmaReel clip={c} n={i + 1} />)}
+    </Rail>
+    <div class="wrap dil-foot">
+      <div class="reveal"><PickSide clip={dilemmas[0]} /></div>
+      <div class="dil-links reveal" style="--d:.1s">
+        <p class="note">more where these came from</p>
+        <div class="btn-row">
+          <a href="/dilemma/" class="btn btn--primary">All the dilemmas</a>
+          {ig && <a href={ig.url} target="_blank" rel="me noopener" class="btn btn--ghost">Follow on Instagram<span class="sr-only"> (opens in a new tab)</span></a>}
+        </div>
+        {press && <p class="muted small">One of my dilemmas got the internet talking: <a href={press.url} target="_blank" rel="noopener" class="text-link">read the {press.publisher} story<span class="sr-only"> (opens in a new tab)</span></a>.</p>}
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY ME -->
+  <section class="room-2 section why has-sbg" aria-labelledby="why-h" data-why>
+    <div class="sbg" aria-hidden="true" style="--veil:88%"><Image src={stages.spotlight} alt="" widths={[800, 1400, 2000]} sizes="100vw" loading="lazy" style="object-position:50% 10%" /></div>
+    <div class="wrap why-grid">
+      <div class="why-copy">
+        <p class="kicker reveal">Why people book me</p>
+        <h2 id="why-h" class="h1" data-split>A strong host does more than hold a <span class="serif">microphone.</span></h2>
+        <p class="lede reveal" style="--d:.15s">It's about reading the room, keeping things moving and making people feel included. That's what I do on air every weekday, and on stage, on camera and in the booth for you.</p>
+        <div class="strengths" role="group" aria-label="My strengths">
+          {strengths.map((s, i) => (
+            <button type="button" class="strength" style={`--n:${i}`} aria-pressed={i === 0 ? 'true' : 'false'} data-strength={s.key}>
+              <span class="lamp" aria-hidden="true"></span>
+              <span class="st-title">{s.title}</span>
+              <span class="st-text">{s.text}</span>
+              <span class="st-prog" aria-hidden="true"><span></span></span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div class="why-media" aria-hidden="true">
+        {strengths.map((s, i) => (
+          <figure class:list={['why-fig', { 'is-on': i === 0 }]} data-fig={s.key}>
+            <Image src={photos[s.photo].src} alt="" widths={[500, 800, 1100]} sizes="(min-width: 960px) 42vw, 92vw" style={`object-position:${photos[s.photo].pos}`} loading="lazy" />
+          </figure>
+        ))}
+        <span class="iris" aria-hidden="true"></span>
+        <p class="quote serif">“Good conversations. Great audiences. Real impact.”</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE MOMENTS -->
+  <section class="room section" aria-labelledby="mom-h">
+    <div class="wrap">
+      <div class="head head--split">
+        <div>
+          <p class="kicker reveal">Off air</p>
+          <h2 id="mom-h" class="h1" data-split>Selected live moments.</h2>
+        </div>
+        <p class="lede reveal" style="--d:.1s">I bring the confidence and spontaneity of live radio into event spaces: connecting with audiences, guiding the programme and keeping the room engaged.</p>
+      </div>
+      <ul class="tiles">
+        {moments.map((m, i) => (
+          <li class="tile tone-host reveal" style={`--d:${i * 0.12}s`}>
+            <ToneImage src={photos[m.key].src} alt={photos[m.key].alt} widths={[500, 800, 1100]} sizes="(min-width: 900px) 33vw, 92vw" pos={photos[m.key].pos} />
+            <div class="tile-body">
+              <span class="badge badge--booking">{m.label}</span>
+              <h3>{m.cap}</h3>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p class="after reveal"><a href="/work/" class="text-link">See the gallery</a></p>
+    </div>
+  </section>
+
+  {site.testimonials.length > 0 && (
+    <section class="room-2 section" aria-labelledby="t-h">
+      <div class="wrap"><h2 id="t-h" class="h1">From the organisers.</h2>
+        <div class="grid grid--3">{site.testimonials.map((t: any) => <blockquote class="tq"><p class="serif">“{t.quote}”</p><footer>{t.name}, {t.role}, {t.organisation}</footer></blockquote>)}</div>
+      </div>
+    </section>
+  )}
+</Base>
+<style>
+  /* ---------- Why me ---------- */
+  .why-grid { display: grid; gap: clamp(2.5rem, 2rem + 3vw, 5rem); align-items: center; }
+  @media (min-width: 960px) { .why-grid { grid-template-columns: 1.05fr 1fr; } }
+  .why-copy { display: grid; gap: 1.3rem; }
+  .why-copy .serif { color: var(--accent-text); font-weight: 400; }
+  .strengths { display: grid; margin-top: .8rem; border-top: 1px solid var(--line); }
+  .strength { all: unset; cursor: pointer; position: relative; display: grid; gap: .45rem; padding: 1.25rem 0 1.35rem 2.1rem; border-bottom: 1px solid var(--line); }
+  .strength:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+  .lamp { position: absolute; left: 0; top: 1.55rem; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--text-2); transition: background-color .4s, border-color .4s, box-shadow .6s; }
+  .strength[aria-pressed='true'] .lamp { background: var(--copper); border-color: var(--copper); box-shadow: 0 0 0 6px rgba(255,92,147,.15), 0 0 24px 4px rgba(255,92,147,.7); }
+  .st-title { font-family: var(--font-display); font-weight: 600; font-size: var(--step-2); letter-spacing: -0.03em; color: var(--text-2); transition: color .4s;
+    background: linear-gradient(100deg, currentColor 40%, var(--copper) 50%, currentColor 60%) 200% 0 / 300% 100% no-repeat; -webkit-background-clip: text; background-clip: text; }
+  .strength[aria-pressed='true'] .st-title, .strength:hover .st-title { color: var(--text); }
+  .st-text { color: var(--text-2); max-width: 52ch; }
+  .js .st-text { max-height: 0; opacity: 0; overflow: hidden; transform: translateY(-6px); transition: max-height .6s var(--ease-out), opacity .5s, transform .6s var(--ease-out); }
+  .js .strength[aria-pressed='true'] .st-text { max-height: 14em; opacity: 1; transform: none; }
+  .st-prog { position: absolute; left: 2.1rem; right: 0; bottom: -1px; height: 2px; overflow: hidden; }
+  .st-prog span { display: block; height: 100%; background: var(--copper); transform: scaleX(0); transform-origin: left; }
+  .why.cycling .strength[aria-pressed='true'] .st-prog span { animation: prog 5.5s linear both; }
+  @keyframes prog { to { transform: scaleX(1); } }
+
+  /* Entrance: rows slide in one by one, each lamp flickers on like a stage light, a light sweeps the title. */
+  .js .why .strength { opacity: 0; transform: translateX(-36px); filter: blur(6px); }
+  .js .why.lit .strength { animation: row-in 1s var(--ease-out) both; animation-delay: calc(.35s + var(--n) * .22s); }
+  .js .why.lit .lamp { animation: flicker 1.1s steps(1, end) both; animation-delay: calc(.6s + var(--n) * .22s); }
+  .js .why.lit .st-title { animation: sweep 1.6s var(--ease) both; animation-delay: calc(.55s + var(--n) * .22s); }
+  @keyframes row-in { to { opacity: 1; transform: none; filter: none; } }
+  @keyframes flicker { 0% { opacity: 0; } 12% { opacity: 1; } 20% { opacity: .2; } 32% { opacity: 1; } 40% { opacity: .4; } 52%, 100% { opacity: 1; } }
+  @keyframes sweep { from { background-position: 200% 0; } to { background-position: -100% 0; } }
+
+  .why-media { position: relative; aspect-ratio: 4 / 5; border-radius: var(--r-lg); overflow: hidden; background: var(--stage); box-shadow: var(--shadow); }
+  .js .why .why-media { clip-path: circle(0% at 50% 35%); }
+  .js .why.lit .why-media { clip-path: circle(150% at 50% 35%); transition: clip-path 1.6s var(--ease-out) .1s; }
+  .why-fig { position: absolute; inset: 0; clip-path: circle(0% at 50% 35%); transition: clip-path 1.1s var(--ease-out); }
+  .why-fig.is-on { clip-path: circle(150% at 50% 35%); z-index: 1; }
+  .why-fig.was-on { clip-path: circle(150% at 50% 35%); z-index: 0; transition: none; }
+  .why-fig :global(img) { width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); transition: transform 6s var(--ease-out); }
+  .why-fig.is-on :global(img) { transform: none; }
+  .iris { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle at 50% 30%, transparent 35%, rgba(21,10,36,.55) 75%); }
+  .why-media::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, transparent 50%, rgba(21,10,36,.9)); }
+  .quote { position: absolute; z-index: 3; left: 1.5rem; right: 1.5rem; bottom: 1.4rem; color: var(--ivory); font-size: var(--step-2); line-height: 1.15; }
+
+  /* ---------- Rails ---------- */
+  .rail-head { display: grid; gap: .8rem; }
+  .rail-head .muted { color: var(--text-2); }
+  .rail-sec :global(.rail-wrap) { --card: min(78vw, 360px); }
+  .svc-link { position: relative; display: block; aspect-ratio: 3 / 4; border-radius: var(--r-lg); overflow: hidden; text-decoration: none; color: var(--ivory); background: var(--stage); isolation: isolate; box-shadow: 0 30px 60px -36px rgba(70,12,50,.9); }
+  .svc-link::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(21,10,36,0) 42%, rgba(21,10,36,.55) 64%, rgba(21,10,36,.95) 100%); }
+  .svc-body { position: absolute; inset: auto 0 0 0; z-index: 2; padding: 1.5rem; display: grid; gap: .55rem; }
+  .svc-name { font-family: var(--font-display); font-weight: 650; font-size: var(--step-2); line-height: 1.02; letter-spacing: -0.035em; }
+  .svc-short { color: rgba(255,243,246,.86); font-size: .96rem; }
+  .svc-go { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--font-display); font-weight: 600; color: var(--copper); margin-top: .2rem; }
+  .svc-go svg { width: 1.1em; height: 1.1em; transition: transform .3s var(--ease-out); }
+  .svc-link:hover .svc-go svg { transform: translateX(5px); }
+  .svc-link:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+  /* ---------- Hello ---------- */
+  .hello { position: relative; }
+  .hello-grid { display: grid; gap: clamp(2.5rem, 2rem + 3vw, 5rem); align-items: center; }
+  @media (min-width: 960px) { .hello-grid { grid-template-columns: 1fr 1.05fr; } }
+  .collage { position: relative; aspect-ratio: 1 / 1.05; max-width: 620px; width: 100%; justify-self: center; }
+  .pol { position: absolute; margin: 0; padding: .7rem .7rem 2.2rem; background: #fff; border-radius: 6px; box-shadow: 0 30px 60px -30px rgba(110,20,70,.45); transition: transform .6s var(--ease-out); }
+  .pol :global(img) { width: 100%; height: 100%; object-fit: cover; border-radius: 3px; display: block; }
+  .p1 { left: 0; top: 6%; width: 50%; aspect-ratio: 4 / 5.6; transform: rotate(-6deg); }
+  .p2 { right: 2%; top: 0; width: 48%; aspect-ratio: 4 / 5.6; transform: rotate(5deg); z-index: 1; }
+  .p3 { left: 18%; bottom: 0; width: 62%; aspect-ratio: 16 / 12; transform: rotate(-2deg); z-index: 2; }
+  .collage:hover .p1 { transform: rotate(-8deg) translate(-6px, -4px); } .collage:hover .p2 { transform: rotate(7deg) translate(6px, -6px); } .collage:hover .p3 { transform: rotate(0deg) translateY(4px); }
+  .s1 { position: absolute; z-index: 3; right: 0; bottom: 18%; }
+  .hello-copy { display: grid; gap: 1.2rem; justify-items: start; }
+  .hello-copy .serif { color: var(--accent-text); display: block; }
+  .steps-mini { list-style: none; padding: 0; display: grid; gap: .9rem; margin-top: .4rem; }
+  .steps-mini li { display: grid; grid-template-columns: auto 1fr; gap: .9rem; align-items: start; color: var(--text-2); }
+  .steps-mini strong { color: var(--text); font-family: var(--font-display); font-weight: 650; }
+  .steps-mini .dot { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: .9rem; color: #fff; background: var(--rose-btn); box-shadow: 0 0 0 5px color-mix(in srgb, var(--copper) 18%, transparent); }
+  /* ---------- Voice ---------- */
+  .voice { position: relative; }
+  .vo-grid { display: grid; gap: clamp(2.5rem, 2rem + 3vw, 5rem); align-items: center; }
+  @media (min-width: 960px) { .vo-grid { grid-template-columns: 1.1fr .9fr; } }
+  .vo-copy { display: grid; gap: 1.3rem; justify-items: start; }
+  .vo-copy .serif { color: #FF9CC2; }
+  .vo-copy .lede { color: rgba(255,243,246,.86); }
+  .vo-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+  .vo-list li { padding: .4em .95em; border-radius: 999px; border: 1px solid var(--stage-line); background: rgba(255,255,255,.05); font-weight: 600; font-size: .92rem; }
+  .vo-art { position: relative; justify-self: center; width: min(100%, 460px); }
+  .vo-frame { position: relative; aspect-ratio: 4 / 5; overflow: hidden; box-shadow: 0 40px 100px -40px rgba(255,92,147,.6); border: 6px solid rgba(255,255,255,.9); }
+  .vo-frame :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .vo-s { position: absolute; left: -1rem; bottom: 12%; }
+  /* ---------- Dilemma ---------- */
+  .dil { position: relative; }
+  .dil :global(.rail-wrap) { --card: min(70vw, 300px); }
+  .dil .rail-head .lede { margin-top: .4rem; }
+  .dil-foot { display: grid; gap: 2rem; margin-top: 2.4rem; align-items: center; }
+  @media (min-width: 900px) { .dil-foot { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+  .dil-links { display: grid; gap: 1.1rem; justify-items: start; }
+  .small { font-size: .95rem; }
+  .svc-num { position: absolute; z-index: 2; top: 1rem; left: 1rem; padding: .25em .75em; border-radius: 999px; background: rgba(255,255,255,.9); color: var(--rose-btn); font-family: var(--font-display); font-weight: 700; font-size: .8rem; }
+  /* ---------- Credits ---------- */
+  .tiles { list-style: none; padding: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+  .tile { position: relative; min-height: 460px; border-radius: var(--r-lg); overflow: hidden; color: var(--ivory); display: flex; isolation: isolate; background: var(--stage); box-shadow: 0 30px 60px -36px rgba(70,12,50,.9); }
+  .tile::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(21,10,36,0) 45%, rgba(21,10,36,.55) 66%, rgba(21,10,36,.94) 100%); }
+  .tile-body { position: relative; z-index: 2; margin-top: auto; padding: 1.6rem 1.6rem 2.2rem; display: grid; gap: .5rem; justify-items: start; }
+  .tile h3 { font-size: var(--step-2); line-height: 1.05; }
+  .tile p { color: rgba(255,243,246,.88); }
+  .after { margin-top: 2rem; font-weight: 700; }
+  .tq p { font-size: var(--step-2); }
+</style>
+
+<script>
+  const why = document.querySelector<HTMLElement>('[data-why]');
+  if (why) {
+    const btns = [...why.querySelectorAll<HTMLButtonElement>('[data-strength]')];
+    const figs = [...why.querySelectorAll<HTMLElement>('[data-fig]')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let idx = 0, timer = 0, auto = !reduce;
+    const select = (n: number) => {
+      idx = (n + btns.length) % btns.length;
+      const key = btns[idx].dataset.strength;
+      btns.forEach((b, k) => b.setAttribute('aria-pressed', String(k === idx)));
+      figs.forEach((f) => {
+        const on = f.dataset.fig === key;
+        f.classList.toggle('was-on', f.classList.contains('is-on') && !on);
+        f.classList.toggle('is-on', on);
+      });
+      setTimeout(() => figs.forEach((f) => !f.classList.contains('is-on') && f.classList.remove('was-on')), 1200);
+      // restart the progress line
+      const bar = btns[idx].querySelector<HTMLElement>('.st-prog span'); if (bar) { bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = ''; }
+    };
+    const cycle = () => { clearTimeout(timer); if (auto) timer = window.setTimeout(() => { select(idx + 1); cycle(); }, 5500); };
+    const stopAuto = () => { auto = false; why.classList.remove('cycling'); clearTimeout(timer); };
+    btns.forEach((b, k) => {
+      b.addEventListener('click', () => { stopAuto(); select(k); });
+      b.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover)').matches) { stopAuto(); select(k); } });
+    });
+    if (reduce || !('IntersectionObserver' in window)) { why.classList.add('lit'); }
+    else {
+      new IntersectionObserver(([e], io) => {
+        if (!e.isIntersecting) return;
+        why.classList.add('lit'); io.disconnect();
+        setTimeout(() => { if (auto) { why.classList.add('cycling'); select(0); cycle(); } }, 1400);
+      }, { threshold: .3 }).observe(why);
+    }
+  }
+</script>

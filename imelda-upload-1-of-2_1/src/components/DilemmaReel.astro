@@ -1,0 +1,58 @@
+---
+/** One Dilemma of the Day clip: poster first, the video loads only when played. One clip plays at a time. */
+import { clipSrc, clipPoster, type Dilemma } from '../lib/data';
+interface Props { clip: Dilemma; n?: number; eager?: boolean }
+const { clip, n, eager = false } = Astro.props;
+---
+<li class="reel" data-reel>
+  <div class="phone">
+    <video class="vid" preload="none" playsinline poster={clipPoster(clip.id)} data-reel-video aria-label={`Dilemma of the Day: ${clip.question}`}>
+      <source src={clipSrc(clip.id)} type="video/mp4" />
+    </video>
+    <button type="button" class="cover" data-reel-play aria-label={`Play: ${clip.question} (${clip.duration})`}>
+      <img src={clipPoster(clip.id)} alt="" width="720" height="900" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      <span class="shade" aria-hidden="true"></span>
+      <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+      <span class="dur" aria-hidden="true">{clip.duration}</span>
+      {n !== undefined && <span class="num" aria-hidden="true">#{String(n).padStart(2, '0')}</span>}
+    </button>
+  </div>
+  <p class="q">{clip.question}</p>
+  <p class="s">{clip.sub}</p>
+</li>
+<style>
+  .reel { list-style: none; display: grid; gap: .7rem; align-content: start; }
+  .phone { position: relative; aspect-ratio: 4 / 5; border-radius: var(--r-lg); overflow: hidden; background: var(--stage-2); box-shadow: 0 30px 60px -32px rgba(110,20,70,.7), 0 0 0 6px color-mix(in srgb, var(--surface) 70%, transparent); transform: rotate(var(--tilt, 0deg)); transition: transform .5s var(--ease-out), box-shadow .5s; }
+  .reel:nth-child(3n+1) { --tilt: -1.2deg; } .reel:nth-child(3n+2) { --tilt: .9deg; } .reel:nth-child(3n) { --tilt: -.5deg; }
+  .reel:hover .phone { transform: rotate(0deg) translateY(-6px); box-shadow: 0 40px 70px -30px rgba(179,18,90,.6), 0 0 0 6px color-mix(in srgb, var(--surface) 70%, transparent); }
+  .vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #000; }
+  .cover { all: unset; cursor: pointer; position: absolute; inset: 0; z-index: 2; display: block; }
+  .cover:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; border-radius: var(--r-lg); }
+  .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease-out); }
+  .reel:hover .cover img { transform: scale(1.05); }
+  .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(21,10,36,.35) 0, transparent 30%, transparent 55%, rgba(21,10,36,.75)); }
+  .play { position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.92); color: var(--rose-btn); box-shadow: 0 0 0 0 rgba(255,92,147,.55); transition: transform .35s var(--ease-out); }
+  .play svg { width: 28px; height: 28px; margin-left: 4px; }
+  .reel:hover .play, .cover:focus-visible .play { transform: scale(1.1); }
+  @media (prefers-reduced-motion: no-preference) { .play { animation: pulse 2.4s ease-out infinite; } @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,92,147,.55); } 100% { box-shadow: 0 0 0 22px rgba(255,92,147,0); } } }
+  .dur, .num { position: absolute; top: .9rem; padding: .25em .7em; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: .78rem; }
+  .dur { right: .9rem; background: rgba(21,10,36,.75); color: #fff; }
+  .num { left: .9rem; background: var(--rose-btn); color: #fff; }
+  .reel.playing .cover { display: none; }
+  .q { font-family: var(--font-display); font-weight: 650; font-size: clamp(1rem, .9rem + .45vw, 1.35rem); line-height: 1.15; letter-spacing: -0.02em; margin-top: .4rem; }
+  .s { color: var(--text-2); font-size: .92rem; }
+  @media (max-width: 559px) { .play { width: 54px; height: 54px; margin: -27px 0 0 -27px; } .play svg { width: 22px; height: 22px; } }
+</style>
+<script>
+  const reels = [...document.querySelectorAll<HTMLElement>('[data-reel]')];
+  const stopOthers = (keep: HTMLVideoElement) => reels.forEach((r) => { const v = r.querySelector<HTMLVideoElement>('video')!; if (v !== keep && !v.paused) v.pause(); });
+  reels.forEach((r) => {
+    const v = r.querySelector<HTMLVideoElement>('[data-reel-video]')!;
+    const b = r.querySelector<HTMLButtonElement>('[data-reel-play]')!;
+    b.addEventListener('click', () => {
+      r.classList.add('playing'); v.controls = true; v.preload = 'auto';
+      stopOthers(v); v.play().catch(() => {}); v.focus();
+    });
+    v.addEventListener('play', () => stopOthers(v));
+  });
+</script>

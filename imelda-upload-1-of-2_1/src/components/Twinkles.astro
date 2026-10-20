@@ -1,0 +1,10 @@
+---
+/** A few four-point sparkles scattered over a section (decorative). Positions are percentages. */
+interface Props { items?: { x: number; y: number; s?: number; c?: string; d?: number }[] }
+const { items = [{ x: 8, y: 14, s: 22 }, { x: 88, y: 10, s: 16, c: 'var(--lilac)', d: 1.2 }, { x: 93, y: 62, s: 12, d: .6 }, { x: 4, y: 72, s: 14, c: 'var(--peach)', d: 1.8 }] } = Astro.props;
+---
+{items.map((t) => (
+  <span class="twinkle" aria-hidden="true" style={`left:${t.x}%;top:${t.y}%;--s:${t.s ?? 18}px;${t.c ? `--tw:${t.c};` : ''}--dl:${t.d ?? 0}s`}>
+    <svg viewBox="0 0 24 24"><path d="M12 0c.6 6.6 5.4 11.4 12 12-6.6.6-11.4 5.4-12 12-.6-6.6-5.4-11.4-12-12C6.6 11.4 11.4 6.6 12 0z" fill="currentColor"/></svg>
+  </span>
+))}

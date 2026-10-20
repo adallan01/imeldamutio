@@ -1,0 +1,67 @@
+---
+/** "Hear my voice": a short sample with its real waveform. The bars light up as it plays; tap a bar to jump. */
+import wave from '../../data/voice-sample.json';
+interface Props { title?: string; caption?: string }
+const { title = 'Hear my voice', caption = 'A taste of my Dilemma of the Day' } = Astro.props;
+---
+<div class="vp" data-vp>
+  <audio preload="none" src="/audio/imelda-voice-sample.m4a" data-vp-audio></audio>
+  <button type="button" class="vp-btn" data-vp-btn aria-label={`Play: ${title}`}>
+    <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+    <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+  </button>
+  <div class="vp-body">
+    <p class="vp-t">{title}</p>
+    <div class="bars" aria-hidden="true" data-vp-bars>
+      {wave.bars.map((b, i) => <span style={`--h:${Math.round(b * 100)}%;--i:${i}`}></span>)}
+    </div>
+    <p class="vp-c"><span data-vp-time>0:00</span> / 0:{String(Math.round(wave.seconds)).padStart(2, '0')} · {caption}</p>
+  </div>
+</div>
+<style>
+  .vp { display: grid; grid-template-columns: auto 1fr; gap: 1.1rem; align-items: center; padding: 1.1rem 1.4rem 1.1rem 1.1rem; border-radius: 999px; background: color-mix(in srgb, var(--surface) 86%, transparent); border: 1px solid var(--line); box-shadow: var(--shadow); width: 100%; max-width: 560px; }
+  :global(.stage) .vp { background: rgba(255,255,255,.08); border-color: var(--stage-line); box-shadow: 0 30px 60px -30px rgba(0,0,0,.6); }
+  .vp-btn { width: 64px; height: 64px; border-radius: 50%; border: 0; display: grid; place-items: center; background: var(--rose-btn); color: #fff; box-shadow: 0 10px 30px -8px rgba(255,92,147,.7); transition: transform .3s var(--ease-out); }
+  .vp-btn:hover { transform: scale(1.06); }
+  .vp-btn svg { width: 26px; height: 26px; }
+  .vp-btn .i-play { margin-left: 3px; }
+  .vp-btn .i-pause, .vp.on .vp-btn .i-play { display: none; }
+  .vp.on .vp-btn .i-pause { display: block; }
+  .vp-body { display: grid; gap: .35rem; min-width: 0; }
+  .vp-t { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
+  .bars { display: flex; align-items: center; gap: 2px; height: 38px; cursor: pointer; }
+  .bars span { flex: 1; min-width: 1px; height: var(--h); border-radius: 2px; background: color-mix(in srgb, var(--text) 26%, transparent); transition: background-color .2s; }
+  .bars span.lit { background: var(--copper); }
+  @media (prefers-reduced-motion: no-preference) {
+    .vp.on .bars span { animation: bob 1.1s ease-in-out calc(var(--i) * -37ms) infinite alternate; }
+    @keyframes bob { to { transform: scaleY(.82); } }
+  }
+  .vp-c { font-size: var(--step--1); color: var(--text-2); font-variant-numeric: tabular-nums; }
+  @media (max-width: 420px) { .vp { border-radius: var(--r-lg); } }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-vp]').forEach((vp) => {
+    const audio = vp.querySelector<HTMLAudioElement>('[data-vp-audio]')!;
+    const btn = vp.querySelector<HTMLButtonElement>('[data-vp-btn]')!;
+    const bars = [...vp.querySelectorAll<HTMLElement>('[data-vp-bars] span')];
+    const time = vp.querySelector<HTMLElement>('[data-vp-time]')!;
+    const label = btn.getAttribute('aria-label')!.replace(/^Play: /, '');
+    const paint = () => {
+      const f = audio.duration ? audio.currentTime / audio.duration : 0;
+      const n = Math.round(f * bars.length);
+      bars.forEach((b, i) => b.classList.toggle('lit', i < n));
+      const s = Math.floor(audio.currentTime); time.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    };
+    const state = (on: boolean) => { vp.classList.toggle('on', on); btn.setAttribute('aria-label', `${on ? 'Pause' : 'Play'}: ${label}`); };
+    btn.addEventListener('click', () => { if (audio.paused) { document.querySelectorAll('video').forEach((v) => v.pause()); audio.play().catch(() => {}); } else audio.pause(); });
+    audio.addEventListener('play', () => state(true));
+    audio.addEventListener('pause', () => state(false));
+    audio.addEventListener('ended', () => { state(false); audio.currentTime = 0; paint(); });
+    audio.addEventListener('timeupdate', paint);
+    vp.querySelector('[data-vp-bars]')!.addEventListener('click', (e) => {
+      const i = bars.indexOf(e.target as HTMLElement); if (i < 0) return;
+      const go = () => { audio.currentTime = (i / bars.length) * audio.duration; paint(); };
+      if (audio.readyState >= 1) go(); else { audio.addEventListener('loadedmetadata', go, { once: true }); audio.load(); }
+    });
+  });
+</script>
